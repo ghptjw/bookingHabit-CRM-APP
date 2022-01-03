@@ -36,7 +36,7 @@ public class MemberController {
         memberService.updateCenterInfo(request.getSerialNumber(), id);
         return "수정이 완료되었습니다.";
     }
-
+    //data
     @Data
     static class UpdateMemberGymInfo {
         private String serialNumber;
