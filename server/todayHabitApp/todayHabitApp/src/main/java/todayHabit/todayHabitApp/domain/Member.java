@@ -1,16 +1,18 @@
 package todayHabit.todayHabitApp.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 import todayHabit.todayHabitApp.domain.gym.Gym;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "member")
 public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "GYM_id", insertable = false, updatable = false)
+    @JoinColumn(name = "GYM_id")
     private Gym gym;
 
     @Id
@@ -52,5 +54,23 @@ public class Member {
                 ", description='" + description + '\'' +
                 ", registerDate=" + registerDate +
                 '}';
+    }
+
+    protected Member() {
+
+    }
+
+    public Member(String name, String email, String birth, Male male, String phone) {
+        this.name = name;
+        this.email = email;
+        this.birth = birth;
+        this.male = male;
+        this.phone = phone;
+        this.approve = true;
+    }
+
+    // 센터 등록
+    public void updateGymInfo(Gym gym) {
+        this.setGym(gym);
     }
 }
