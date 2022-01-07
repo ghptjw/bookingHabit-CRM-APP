@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import todayHabit.todayHabitApp.domain.Male;
 import todayHabit.todayHabitApp.domain.Member;
 import todayHabit.todayHabitApp.dto.member.CreateMemberDto;
+import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
 import todayHabit.todayHabitApp.service.MemberService;
 
 import javax.validation.Valid;
@@ -21,12 +22,8 @@ public class MemberController {
     public String saveMember(@RequestBody @Valid CreateMemberDto request) {
         Male male = Male.RequestToEnum(request.getMale());
         Member member = new Member(
-                request.getName(),
-                request.getEmail(),
-                request.getBirth(),
-                male,
-                request.getPhone()
-        );
+                request.getName(), request.getEmail(),
+                request.getBirth(), male, request.getPhone());
         memberService.joinMember(member);
         return "생성이 완료되었습니다.";
     }
@@ -36,9 +33,25 @@ public class MemberController {
         memberService.updateCenterInfo(request.getSerialNumber(), id);
         return "수정이 완료되었습니다.";
     }
-    //data
+
+    @PostMapping("/member/login")
+    public LoginMemberDto loginMember(@RequestBody LoginInfo request) {
+        Member findMember = memberService.LogIn(request.email, request.passwd);
+        return new LoginMemberDto(findMember);
+    }
+
+    /*
+    * data
+    * */
     @Data
     static class UpdateMemberGymInfo {
         private String serialNumber;
+    }
+
+    @Data
+    static class LoginInfo {
+        private String email;
+        private String passwd;
+
     }
 }

@@ -51,4 +51,14 @@ class MemberServiceTest {
         //then
         Assert.assertEquals(memberRepository.findMemberById(member.getId()).getGym().getSerialNumber(), "ft1333");
     }
+
+    @Test
+    public void 로그인() throws Exception{
+        //given
+
+        //when
+        Member findMember = memberService.LogIn("test3@naver.com", "ft1333");
+        //then
+        Assert.assertEquals(findMember.getEmail(),"test3@naver.com");
+    }
 }

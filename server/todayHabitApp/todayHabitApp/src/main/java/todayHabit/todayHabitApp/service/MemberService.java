@@ -1,6 +1,7 @@
 package todayHabit.todayHabitApp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.Member;
@@ -17,6 +18,8 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GymRepository gymRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public Long joinMember(Member member) {
         validateDuplicateMember(member);
@@ -37,6 +40,19 @@ public class MemberService {
 
         System.out.println("findMember.getName() = " + findMember.getEmail());
         return "등록이 완료되었습니다.";
+    }
+
+    public Member LogIn(String email, String passwd) {
+        List<Member> findMember = memberRepository.findMemberByEmail(email);
+        if(findMember.isEmpty()){
+            throw new IllegalStateException("존재 하지 않는 회원입니다");
+        }
+        System.out.println("passwd: "+passwordEncoder.encode(passwd));
+        if(passwordEncoder.matches(passwd,findMember.get(0).getPasswd())){
+            return findMember.get(0);
+        }else{
+            throw new IllegalStateException("패스워드가 틀렸습니다");
+        }
     }
 
     private void validateDuplicateMember(Member member) {

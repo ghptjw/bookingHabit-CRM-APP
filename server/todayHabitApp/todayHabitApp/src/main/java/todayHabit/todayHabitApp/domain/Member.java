@@ -1,5 +1,6 @@
 package todayHabit.todayHabitApp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import todayHabit.todayHabitApp.domain.gym.Gym;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GYM_id")
+    @JsonIgnore
     private Gym gym;
 
     @Id
