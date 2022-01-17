@@ -1,0 +1,18 @@
+package todayHabit.todayHabitApp.domain;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+public enum Male {
+    남,
+    여;
+
+    @JsonCreator
+    public static Male RequestToEnum(String val) {
+        for (Male male : Male.values()) {
+            if (male.name().equals(val)) {
+                return male;
+            }
+        }
+        return null;
+    }
+}
