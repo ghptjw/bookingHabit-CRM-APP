@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "692458225679",
+    "project_id": "bookinghabit",
+    "storage_bucket": "bookinghabit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692458225679:android:76e682af88d331942f237a",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692458225679-6i4vbpscqaes8nqknhli7t60lq7spp80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXpvBiefMxNFgaMGnWKE7LxYCGzKj1yiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692458225679-6i4vbpscqaes8nqknhli7t60lq7spp80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
