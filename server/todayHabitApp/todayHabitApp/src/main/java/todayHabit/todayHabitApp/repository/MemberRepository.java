@@ -2,16 +2,19 @@ package todayHabit.todayHabitApp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import todayHabit.todayHabitApp.domain.Member;
+import org.springframework.transaction.annotation.Transactional;
+import todayHabit.todayHabitApp.domain.member.Member;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberRepository {
     private final EntityManager em;
 
+    @Transactional
     public void saveMember(Member member) {
         em.persist(member);
     }

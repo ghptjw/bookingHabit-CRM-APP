@@ -1,15 +1,14 @@
-package todayHabit.todayHabitApp.domain;
+package todayHabit.todayHabitApp.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.Setter;
 import todayHabit.todayHabitApp.domain.gym.Gym;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "member")
 public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +36,10 @@ public class Member {
     private int countClass;
     private String description;
     private LocalDateTime registerDate;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "member")
+    private List<MemberOwnMembership> memberOwnMemberships;
 
     @Override
     public String toString() {
@@ -73,6 +76,11 @@ public class Member {
 
     // 센터 등록
     public void updateGymInfo(Gym gym) {
-        this.setGym(gym);
+        this.gym = gym;
+    }
+
+    // 비밀번호 변경
+    public void updatePasswd(String passwd) {
+        this.passwd = passwd;
     }
 }
