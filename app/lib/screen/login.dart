@@ -1,4 +1,8 @@
+// ? 화면 UI에 대한 폴더, 해당 화면을 표현하는 코드들을 모아두는 공간입니다. 메인 화면, 서브 화면 등
+
 import 'package:flutter/material.dart';
+// ignore: unused_import
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthPage extends StatelessWidget {
   //  const AuthPage({Key? key}) : super(key: key);
@@ -36,41 +40,7 @@ class AuthPage extends StatelessWidget {
               SizedBox(
                 height: size.height * 0.02,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      '회원가입',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xffBCBCBC),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '|',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Color(0xffBCBCBC),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      '비밀번호 찾기',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xffBCBCBC),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _pageRoutingBtn(),
               SizedBox(
                 height: size.height * 0.15,
               ),
@@ -95,6 +65,50 @@ class AuthPage extends StatelessWidget {
             ],
           ),
         )));
+  }
+
+  Widget _pageRoutingBtn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 1,
+          child: TextButton(
+            onPressed: () {},
+            child: const Text(
+              '회원가입',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xffBCBCBC),
+              ),
+            ),
+          ),
+        ),
+        const Text(
+          '|',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            color: Color(0xffBCBCBC),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: TextButton(
+            child: const Text(
+              '비밀번호 찾기',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xffBCBCBC),
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _inputForm(Size size) {
