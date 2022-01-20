@@ -15,5 +15,7 @@ public class CreateMemberDto {
     private String phone;
     @NotEmpty(message = "이메일계정을 입력해주세요")
     private String email;
+    @NotEmpty(message = "비밀번호를 입력해주세요")
+    private String passwd;
 
 }

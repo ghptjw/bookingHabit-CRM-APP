@@ -1,4 +1,4 @@
-package todayHabit.todayHabitApp.dto;
+package todayHabit.todayHabitApp.dto.schedule;
 
 import lombok.Data;
 import todayHabit.todayHabitApp.domain.schedule.CoachClass;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
-public class DayClassDto {
+public class AfterDayClassDto {
 
     private Long classId;
     private Long classTypeId;
@@ -28,7 +28,7 @@ public class DayClassDto {
 
     private List<ClassCoachDto> coachList;
 
-    public DayClassDto(Schedule classList) {
+    public AfterDayClassDto(Schedule classList) {
         this.classId = classList.getId();
         this.classTypeId = classList.getClassType().getId();
         this.classTypeName = classList.getClassTypeName();

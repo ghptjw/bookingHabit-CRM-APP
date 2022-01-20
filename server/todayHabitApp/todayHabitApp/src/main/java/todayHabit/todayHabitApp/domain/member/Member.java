@@ -3,6 +3,8 @@ package todayHabit.todayHabitApp.domain.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import todayHabit.todayHabitApp.domain.gym.Gym;
+import todayHabit.todayHabitApp.domain.gym.GymContainMember;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +43,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<MemberOwnMembership> memberOwnMemberships;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "member")
+    private List<GymContainMember> gymList;
+
     @Override
     public String toString() {
         return "Member{" +
@@ -65,13 +71,14 @@ public class Member {
 
     }
 
-    public Member(String name, String email, String birth, Male male, String phone) {
+    public Member(String name, String email, String birth, Male male, String phone, String passwd) {
         this.name = name;
         this.email = email;
         this.birth = birth;
         this.male = male;
         this.phone = phone;
         this.approve = true;
+        this.passwd = passwd;
     }
 
     // 센터 등록

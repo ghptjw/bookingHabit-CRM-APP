@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.gym.GymContainMember;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.gym.Gym;
+import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
 import todayHabit.todayHabitApp.firebase.FirebaseRepository;
+import todayHabit.todayHabitApp.repository.GymContainMemberRepository;
 import todayHabit.todayHabitApp.repository.GymRepository;
 import todayHabit.todayHabitApp.repository.MemberRepository;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final GymRepository gymRepository;
+    private final GymContainMemberRepository gymContainMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final FirebaseRepository firebaseRepository;
 
@@ -47,12 +50,10 @@ public class MemberService {
         Gym gym = findGym.get();
         List<GymContainMember> gymContainMemberList
                 = gymRepository.findGymContainMemberByGymIdWithMemberId(gym.getId(), findMember.getId());
-        if (findMember.getPasswd() == null) { // 신규 센터 등록일 때 -- 비밀번호 설정 및 센터 등록
-            String encodingPasswd = passwordEncoder.encode(serialNumber);
-            findMember.updatePasswd(encodingPasswd);
+        if (findMember.getGym() == null) { // 센터 정보가 없을 때 -- 회원정보에 센터 정보 추가
             findMember.updateGymInfo(gym);
-            firebaseRepository.updateMemberGymId(findMember,encodingPasswd);
         }
+
         if(gymContainMemberList.isEmpty()) { // 등록된 센터가 아닐 때 -- 센터 등록
             gymRepository.insertGymContainMember(gym, findMember);
         }else{
@@ -61,13 +62,13 @@ public class MemberService {
         return "등록이 완료되었습니다.";
     }
 
-    public Member logIn(String email, String passwd) {
+    public LoginMemberDto logIn(String email, String passwd) throws Exception{
         List<Member> findMember = memberRepository.findMemberByEmail(email);
         if(findMember.isEmpty()){
             throw new IllegalStateException("존재 하지 않는 회원입니다");
         }
         if(passwordEncoder.matches(passwd,findMember.get(0).getPasswd())){
-            return findMember.get(0);
+            return new LoginMemberDto(findMember.get(0));
         }else{
             throw new IllegalStateException("패스워드가 틀렸습니다");
         }
