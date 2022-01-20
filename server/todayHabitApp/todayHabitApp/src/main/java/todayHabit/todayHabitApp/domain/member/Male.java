@@ -1,4 +1,4 @@
-package todayHabit.todayHabitApp.domain;
+package todayHabit.todayHabitApp.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

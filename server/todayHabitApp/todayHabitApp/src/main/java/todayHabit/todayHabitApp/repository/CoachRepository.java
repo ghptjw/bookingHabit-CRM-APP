@@ -2,10 +2,9 @@ package todayHabit.todayHabitApp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import todayHabit.todayHabitApp.domain.Coach;
+import todayHabit.todayHabitApp.domain.coach.Coach;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor

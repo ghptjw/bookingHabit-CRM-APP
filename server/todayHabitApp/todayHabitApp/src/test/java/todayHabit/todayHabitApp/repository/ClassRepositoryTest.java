@@ -1,30 +1,33 @@
 package todayHabit.todayHabitApp.repository;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
+import todayHabit.todayHabitApp.domain.schedule.Schedule;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertThrows;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class MemberRepositoryTest {
-
+class ClassRepositoryTest {
 
     @Autowired
-    MemberRepository memberRepository;
+    ClassRepository classRepository;
 
     @Test
-    public void 회원가입() throws Exception {
+    public void 수업조사_날짜() throws Exception{
         //given
         Member member = new Member("회원1", "test1@naver.com", "19971109", Male.남, "01011112222");
         //when
-        memberRepository.saveMember(member);
+        List<Schedule> classByDate = classRepository.findClassByDate(LocalDate.now(), 168l, null);
         //then
-        assertEquals(member, memberRepository.findMemberById(member.getId()));
+        Assert.assertEquals(classByDate.get(0).getStartDay(),LocalDate.now());
     }
 }

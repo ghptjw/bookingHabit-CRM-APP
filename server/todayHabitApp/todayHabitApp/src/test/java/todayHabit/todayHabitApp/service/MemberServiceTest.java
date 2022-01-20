@@ -4,15 +4,16 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import todayHabit.todayHabitApp.domain.Male;
-import todayHabit.todayHabitApp.domain.Member;
+import todayHabit.todayHabitApp.domain.member.Male;
+import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -23,6 +24,8 @@ class MemberServiceTest {
     MemberService memberService;
     @Autowired
     EntityManager em;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Test
     public void 중복회원_조사() throws Exception{
         //given
@@ -34,7 +37,16 @@ class MemberServiceTest {
             memberService.joinMember(member);
         });
     }
-
+    
+    @Test
+    public void 회원가입() throws Exception{
+        //given
+        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222");
+        //when
+        memberService.joinMember(member);
+        //then
+        assertEquals(member.getId(),memberRepository.findMemberById(member.getId()).getId());
+    }
     @Test
     public void 회원센터정보등록() throws Exception{
         //given
@@ -57,8 +69,25 @@ class MemberServiceTest {
         //given
 
         //when
-        Member findMember = memberService.LogIn("test3@naver.com", "ft1333");
+        Member findMember = memberService.logIn("test3@naver.com", "ft1333");
         //then
         Assert.assertEquals(findMember.getEmail(),"test3@naver.com");
+    }
+
+    @Test
+    public void 비밀번호변경() throws Exception{
+        //given
+        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222");
+        member.updatePasswd("ft1333");
+        em.persist(member);
+        em.flush();
+        String passwd = "ft1333";
+        //when
+        memberService.updatePasswd(member.getId(),passwd,"ft1333");
+        em.flush();
+        //then
+        Member findMember = memberRepository.findMemberById(member.getId());
+        System.out.println(findMember.getEmail());
+        Assert.assertEquals(true,passwordEncoder.matches(passwd, findMember.getPasswd()));
     }
 }
