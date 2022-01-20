@@ -23,10 +23,13 @@ public class ClassRepository {
                 " where s.startDay = :startDay " +
                 " and g.id = :gymId";
         if (classTypeList.size() != 0) {
-            query += "and ct.id in (";
+            query += " and ct.id in (";
         }
         for (Long classType : classTypeList) {
-
+            query += classType;
+        }
+        if (classTypeList.size() != 0) {
+            query += " )";
         }
         List<Schedule> classList = em.createQuery(query, Schedule.class)
                 .setParameter("startDay", date)

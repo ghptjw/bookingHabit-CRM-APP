@@ -12,12 +12,19 @@ import java.util.List;
 public class MemberOwnMembershipRepository {
     private final EntityManager em;
 
-    public List<MemberOwnMembership> findMemberOwnMembershipFindByMemberId(Long memberId) {
+    public List<MemberOwnMembership> findMemberOwnMembershipFindByMemberId(Long memberId, Long membershipId) {
         return em.createQuery("select mom from MemberOwnMembership mom " +
                         " join mom.member m" +
-                        " where m.id = :memberId")
+                        " join mom.membership ms" +
+                        " where m.id = :memberId" +
+                        " and ms.id = :membershipId")
                 .setParameter("memberId", memberId)
+                .setParameter("membershipId", membershipId)
                 .getResultList();
+    }
+
+    public MemberOwnMembership findById(Long membershipId) {
+       return em.find(MemberOwnMembership.class, membershipId);
     }
 }
 

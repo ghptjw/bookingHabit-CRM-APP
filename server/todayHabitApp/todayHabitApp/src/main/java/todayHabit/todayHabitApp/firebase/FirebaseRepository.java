@@ -48,7 +48,7 @@ public class FirebaseRepository {
 
     public static final String collectionName = "userAuthData";
     public void saveMember(Member member) throws Exception {
-        MemberDto memberDto = new MemberDto(member.getName(),member.getEmail(),null ,member.getPhone());
+        MemberDto memberDto = new MemberDto(member.getName(),member.getEmail(), member.getPasswd() ,member.getPhone());
         Firestore firestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> apiFuture = firestore.collection(collectionName).document(member.getId().toString())
                 .set(memberDto);

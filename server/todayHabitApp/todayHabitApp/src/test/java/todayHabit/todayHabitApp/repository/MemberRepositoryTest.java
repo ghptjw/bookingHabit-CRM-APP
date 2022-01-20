@@ -21,7 +21,7 @@ class MemberRepositoryTest {
     @Test
     public void 회원가입() throws Exception {
         //given
-        Member member = new Member("회원1", "test1@naver.com", "19971109", Male.남, "01011112222");
+        Member member = new Member("회원1", "test1@naver.com", "19971109", Male.남, "01011112222","1233");
         //when
         memberRepository.saveMember(member);
         //then

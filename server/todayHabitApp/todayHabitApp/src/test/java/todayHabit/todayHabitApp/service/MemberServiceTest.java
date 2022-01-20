@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
+import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
 import todayHabit.todayHabitApp.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
@@ -29,7 +30,8 @@ class MemberServiceTest {
     @Test
     public void 중복회원_조사() throws Exception{
         //given
-        Member member = new Member("회원1", "homelala@naver.com", "19971109", Male.남, "01011112222");
+        Member member = new Member("회원1", "homa@naver.com", "19971109", Male.남, "01011112222" ,"1111");
+
         //when
 
         //then
@@ -41,7 +43,8 @@ class MemberServiceTest {
     @Test
     public void 회원가입() throws Exception{
         //given
-        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222");
+        Member member = new Member("회원1", "homa@naver.com", "19971109", Male.남, "01011112222" ,"1111");
+
         //when
         memberService.joinMember(member);
         //then
@@ -50,7 +53,7 @@ class MemberServiceTest {
     @Test
     public void 회원센터정보등록() throws Exception{
         //given
-        Member member = new Member("회원1", "homa@naver.com", "19971109", Male.남, "01011112222");
+        Member member = new Member("회원1", "homa@naver.com", "19971109", Male.남, "01011112222" ,"1111");
         em.persist(member);
         em.flush();
         em.clear();
@@ -69,15 +72,15 @@ class MemberServiceTest {
         //given
 
         //when
-        Member findMember = memberService.logIn("test3@naver.com", "ft1333");
+        LoginMemberDto loginMemberDto = memberService.logIn("test3@naver.com", "ft1333");
         //then
-        Assert.assertEquals(findMember.getEmail(),"test3@naver.com");
+        Assert.assertEquals(loginMemberDto.getEmail(),"test3@naver.com");
     }
 
     @Test
     public void 비밀번호변경() throws Exception{
         //given
-        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222");
+        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222",":123");
         member.updatePasswd("ft1333");
         em.persist(member);
         em.flush();

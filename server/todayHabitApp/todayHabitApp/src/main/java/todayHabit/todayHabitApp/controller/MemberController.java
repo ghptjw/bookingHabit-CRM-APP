@@ -2,6 +2,7 @@ package todayHabit.todayHabitApp.controller;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
@@ -11,19 +12,22 @@ import todayHabit.todayHabitApp.service.MemberService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/member/save")
     public String saveMember(@RequestBody @Valid CreateMemberDto request) {
         Male male = Male.RequestToEnum(request.getMale());
+        String encodingPasswd = passwordEncoder.encode(request.getPasswd());
         Member member = new Member(
                 request.getName(), request.getEmail(),
-                request.getBirth(), male, request.getPhone());
+                request.getBirth(), male, request.getPhone(), encodingPasswd);
         memberService.joinMember(member);
         return "생성이 완료되었습니다.";
     }
@@ -35,9 +39,9 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public LoginMemberDto loginMember(@RequestBody LoginInfo request) {
-        Member findMember = memberService.logIn(request.email, request.passwd);
-        return new LoginMemberDto(findMember);
+    public Optional<LoginMemberDto> loginMember(@RequestBody LoginInfo request) throws Exception {
+        Optional<LoginMemberDto> loginMemberDto = Optional.ofNullable(memberService.logIn(request.email, request.passwd));
+        return loginMemberDto;
     }
 
     @PutMapping("/member/update/passwd/{id}")

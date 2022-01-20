@@ -1,6 +1,7 @@
 package todayHabit.todayHabitApp.dto.member;
 
 import lombok.Data;
+import todayHabit.todayHabitApp.domain.gym.GymContainMember;
 import todayHabit.todayHabitApp.domain.holding.HoldingMembership;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
@@ -18,9 +19,7 @@ import static java.util.stream.Collectors.*;
 @Data
 public class LoginMemberDto {
 
-    private GymSettingInfo gymSettingInfo;
     private Long gymId;
-    private String gymName;
     private Long member_id;
     private String name;
     private String email;
@@ -29,11 +28,10 @@ public class LoginMemberDto {
     private String phone;
 
     private List<memberOwnMembershipsDto> memberOwnMemberships;
+    private List<gymListDto> gymList;
 
     public LoginMemberDto(Member member) {
         this.gymId = member.getGym().getId();
-        this.gymName = member.getGym().getName();
-        this.gymSettingInfo = new GymSettingInfo(member.getGym());
         this.member_id = member.getId();
         this.name = member.getName();
         this.email = member.getEmail();
@@ -43,10 +41,15 @@ public class LoginMemberDto {
         this.memberOwnMemberships = member.getMemberOwnMemberships().stream()
                 .map(memberOwnMembership -> new memberOwnMembershipsDto(memberOwnMembership))
                 .collect(toList());
+        this.gymList = member.getGymList().stream()
+                .map(gymList -> new gymListDto(gymList.getGym()))
+                .collect(toList());
     }
 
     @Data
-    static class GymSettingInfo {
+    private class gymListDto {
+        private Long gymId;
+        private String gymName;
         private int openReserveDate; // 예약이 몇일 전부터 열릴지(일 단위)
         private String openReserveTime; // 예약이 몇 시 부터 열릴지
         private boolean remainMember; // 잔여 인원 노출 여부
@@ -66,7 +69,9 @@ public class LoginMemberDto {
         private int reserveConfirmTime; // 예약 확정 시간(예약 가능 시간과 동일:1, 예약 변경 가능시간과 동일:2, 예약 취소 가능시간과 동일:3)
         private int limitWaitingMember; // 대기 가능 회원 제한
 
-        public GymSettingInfo(Gym gym) {
+        public gymListDto(Gym gym) {
+            this.gymId = gym.getId();
+            this.gymName = gym.getName();
             this.openReserveDate = gym.getOpenReserveDate();
             this.openReserveTime = gym.getOpenReserveTime();
             this.remainMember = gym.isRemainMember();
@@ -144,6 +149,8 @@ public class LoginMemberDto {
             }
         }
     }
+
+
 }
 
 
