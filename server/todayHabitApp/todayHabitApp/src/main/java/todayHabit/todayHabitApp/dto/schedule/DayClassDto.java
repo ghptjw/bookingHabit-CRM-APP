@@ -1,6 +1,8 @@
 package todayHabit.todayHabitApp.dto.schedule;
 
 import lombok.Data;
+import todayHabit.todayHabitApp.domain.member.MemberClass;
+import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.schedule.CoachClass;
 import todayHabit.todayHabitApp.domain.schedule.Schedule;
 
@@ -11,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
-public class AfterDayClassDto {
+public class DayClassDto {
 
     private Long classId;
     private Long classTypeId;
@@ -28,7 +30,7 @@ public class AfterDayClassDto {
 
     private List<ClassCoachDto> coachList;
 
-    public AfterDayClassDto(Schedule classList) {
+    public DayClassDto(Schedule classList) {
         this.classId = classList.getId();
         this.classTypeId = classList.getClassType().getId();
         this.classTypeName = classList.getClassTypeName();
@@ -42,6 +44,24 @@ public class AfterDayClassDto {
         this.repeatDay = classList.getRepeatDay();
         this.cycle = classList.getCycle();
         this.coachList = classList.getCoachClasses().stream()
+                .map(coachInfo -> new ClassCoachDto(coachInfo))
+                .collect(Collectors.toList());
+    }
+
+    public DayClassDto(MemberClass classList) {
+        this.classId = classList.getSchedule().getId();
+        this.classTypeId = classList.getSchedule().getClassType().getId();
+        this.classTypeName = classList.getSchedule().getClassTypeName();
+        this.category = classList.getSchedule().getCategory();
+        this.startDay = classList.getSchedule().getStartDay();
+        this.startTime = classList.getSchedule().getStartTime();
+        this.period = classList.getSchedule().getPeriod();
+        this.totalReservePerson = classList.getSchedule().getTotalReservation();
+        this.reservePerson = classList.getSchedule().getReserveNumber();
+        this.decrease = classList.getSchedule().getDecrease();
+        this.repeatDay = classList.getSchedule().getRepeatDay();
+        this.cycle = classList.getSchedule().getCycle();
+        this.coachList = classList.getSchedule().getCoachClasses().stream()
                 .map(coachInfo -> new ClassCoachDto(coachInfo))
                 .collect(Collectors.toList());
     }

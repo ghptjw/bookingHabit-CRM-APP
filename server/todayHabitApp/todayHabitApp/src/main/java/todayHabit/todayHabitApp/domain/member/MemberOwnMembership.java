@@ -59,7 +59,7 @@ public class MemberOwnMembership {
 
     public boolean getAvailable() {
         int compare = this.endDay.compareTo(LocalDate.now());
-        if (compare < 0) {
+        if (compare < 0 || (this.maxCountClass <= this.countClass)) {
             return false;
         }else{
             return true;

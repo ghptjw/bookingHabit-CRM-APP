@@ -3,6 +3,7 @@ package todayHabit.todayHabitApp.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import todayHabit.todayHabitApp.domain.member.Member;
+import todayHabit.todayHabitApp.domain.member.MemberClass;
 import todayHabit.todayHabitApp.domain.schedule.Schedule;
 
 import javax.persistence.EntityManager;
@@ -37,5 +38,4 @@ public class ClassRepository {
                 .getResultList();
         return classList;
     }
-
 }
