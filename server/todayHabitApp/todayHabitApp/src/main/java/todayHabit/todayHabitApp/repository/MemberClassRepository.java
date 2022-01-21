@@ -17,7 +17,7 @@ public class MemberClassRepository {
 
     public List<MemberClass> findByMemberOwnMembershipId(LocalDate date, Long gymId, Long membershipId) {
         return em.createQuery("select mc from MemberClass mc " +
-                        " join mc.class c " +
+                        " join fetch mc.schedule c " +
                         " join mc.memberOwnMembership mom " +
                         " join mc.gym g " +
                         " where g.id = :gymId " +

@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import todayHabit.todayHabitApp.dto.schedule.AfterDayClassDto;
-import todayHabit.todayHabitApp.dto.schedule.BeforeDayClassDto;
+import todayHabit.todayHabitApp.dto.schedule.DayClassDto;
 import todayHabit.todayHabitApp.service.ClassService;
 
 import java.time.LocalDate;
@@ -18,14 +17,15 @@ public class ClassController {
     private final ClassService classService;
 
     @PostMapping("/class/day/after")
-    public List<AfterDayClassDto> AfterDaySchedule(@RequestBody AfterDayDto request) {
+    public List<DayClassDto> AfterDaySchedule(@RequestBody AfterDayDto request) {
         return classService.DayClass(LocalDate.now(), request.getGymId(), request.getMembershipId());
     }
 
     @PostMapping("/class/day/before")
-    public List<BeforeDayClassDto> BeforeDaySchedule(@RequestBody AfterDayDto request) {
+    public List<DayClassDto> BeforeDaySchedule(@RequestBody AfterDayDto request) {
         return classService.BeforeDayClass(LocalDate.now(), request.getGymId(), request.getMembershipId());
     }
+
     @Data
     static class AfterDayDto {
         private LocalDate date;
