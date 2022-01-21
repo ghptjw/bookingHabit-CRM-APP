@@ -17,12 +17,12 @@ public class ClassController {
     private final ClassService classService;
 
     @PostMapping("/class/day/after")
-    public List<DayClassDto> AfterDaySchedule(@RequestBody AfterDayDto request) {
+    public List<DayClassDto> AfterDaySchedule(@RequestBody AfterDayDto request) throws Exception{
         return classService.DayClass(LocalDate.now(), request.getGymId(), request.getMembershipId());
     }
 
     @PostMapping("/class/day/before")
-    public List<DayClassDto> BeforeDaySchedule(@RequestBody AfterDayDto request) {
+    public List<DayClassDto> BeforeDaySchedule(@RequestBody AfterDayDto request) throws Exception{
         return classService.BeforeDayClass(LocalDate.now(), request.getGymId(), request.getMembershipId());
     }
 

@@ -28,15 +28,4 @@ class FirebaseRepositoryTest {
         //then
     }
 
-    @Test
-    @Rollback(false)
-    public void 파이어베이스_회원저장() throws Exception{
-        //given
-        Member member = new Member("adf", "adf", "adsf", Male.남, "122", "1111");
-        //when
-        firebaseRepository.initialize();
-        firebaseRepository.saveMember(member);
-        //then
-
-    }
 }

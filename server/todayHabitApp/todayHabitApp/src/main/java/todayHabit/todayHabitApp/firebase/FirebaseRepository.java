@@ -50,6 +50,7 @@ public class FirebaseRepository {
     public void saveMember(Member member) throws Exception {
         MemberDto memberDto = new MemberDto(member.getName(),member.getEmail(), member.getPasswd() ,member.getPhone());
         Firestore firestore = FirestoreClient.getFirestore();
+        System.out.println("emial"+member.getId());
         ApiFuture<WriteResult> apiFuture = firestore.collection(collectionName).document(member.getId().toString())
                 .set(memberDto);
     }

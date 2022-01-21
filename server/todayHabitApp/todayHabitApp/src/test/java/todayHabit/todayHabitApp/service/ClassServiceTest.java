@@ -10,6 +10,8 @@ import todayHabit.todayHabitApp.dto.schedule.DayClassDto;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
+
 
 @SpringBootTest
 @Transactional
@@ -23,10 +25,10 @@ class ClassServiceTest {
     public void 당일수업조사() throws Exception{
         //given
         //when
-        List<DayClassDto> dayClassDto = classService.DayClass(LocalDate.now(), 5l, 112l);
-
         //then
-        Assert.assertEquals(dayClassDto.size(), 0);
+        assertThrows(IllegalStateException.class, () -> {
+             classService.DayClass(LocalDate.now(), 5l, 112l);
+        });
     }
 
     @Test
@@ -34,8 +36,9 @@ class ClassServiceTest {
         //given
 
         //when
-        List<DayClassDto> findClassList = classService.BeforeDayClass(LocalDate.now(), 5l, 111l);
         //then
-        Assert.assertEquals(findClassList.size(), 1);
+        assertThrows(IllegalStateException.class, () -> {
+            classService.BeforeDayClass(LocalDate.now(), 5l, 111l);
+        });
     }
 }

@@ -22,12 +22,11 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/member/save")
-    public String saveMember(@RequestBody @Valid CreateMemberDto request) {
-        Male male = Male.RequestToEnum(request.getMale());
+    public String saveMember(@RequestBody @Valid CreateMemberDto request) throws Exception{
         String encodingPasswd = passwordEncoder.encode(request.getPasswd());
         Member member = new Member(
                 request.getName(), request.getEmail(),
-                request.getBirth(), male, request.getPhone(), encodingPasswd);
+                request.getBirth(), Male.RequestToEnum(request.getMale()), request.getPhone(), encodingPasswd);
         memberService.joinMember(member);
         return "생성이 완료되었습니다.";
     }
