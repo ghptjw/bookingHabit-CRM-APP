@@ -1,12 +1,8 @@
-// ? 화면 UI에 대한 폴더, 해당 화면을 표현하는 코드들을 모아두는 공간입니다. 메인 화면, 서브 화면 등
-
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class AuthPage extends StatelessWidget {
-  //  const AuthPage({Key? key}) : super(key: key);
-  // ignore: prefer_final_fields
+  AuthPage({Key? key}) : super(key: key);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -74,7 +70,13 @@ class AuthPage extends StatelessWidget {
         Expanded(
           flex: 1,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed('/signup'
+                  // arguments 전달 가능 (텍스트, 숫자) {'name':'개남', 'age': '22'}
+                  // 찍어 낼떈 Get.arguments
+                  // 커스텀하게 만든 객체도 전달가능
+                  );
+            },
             child: const Text(
               '회원가입',
               textAlign: TextAlign.center,
@@ -113,7 +115,7 @@ class AuthPage extends StatelessWidget {
 
   Widget _inputForm(Size size) {
     // ignore: unused_local_variable
-    String _user_id, _password = "";
+
     return Form(
         key: _formKey,
         child: Column(
