@@ -22,10 +22,17 @@ class MyApp extends StatelessWidget {
       home: AuthPage(),
       initialRoute: '/',
       getPages: [
-        GetPage(name: '/', page: () => AuthPage()),
-        GetPage(name: '/signup', page: () => SignUpPage()),
+        GetPage(
+          name: '/',
+          page: () => AuthPage(),
+          /* transition,  */
+        ),
+        GetPage(
+          name: '/signup',
+          page: () => SignUpPage(),
+        ),
       ],
     );
   }
 }
- // git test4
+// git test4

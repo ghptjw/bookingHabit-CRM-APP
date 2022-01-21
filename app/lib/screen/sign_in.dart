@@ -71,7 +71,11 @@ class AuthPage extends StatelessWidget {
           flex: 1,
           child: TextButton(
             onPressed: () {
-              print(Get);
+              Get.toNamed('/signup'
+                  // arguments 전달 가능 (텍스트, 숫자) {'name':'개남', 'age': '22'}
+                  // 찍어 낼떈 Get.arguments
+                  // 커스텀하게 만든 객체도 전달가능
+                  );
             },
             child: const Text(
               '회원가입',
