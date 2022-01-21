@@ -9,6 +9,7 @@ import todayHabit.todayHabitApp.domain.gym.Gym;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembershipClassType;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -30,7 +30,7 @@ class MemberServiceTest {
     @Test
     public void 중복회원_조사() throws Exception{
         //given
-        Member member = new Member("회원1", "homa@naver.com", "19971109", Male.남, "01011112222" ,"1111");
+        Member member = new Member("회원1", "homelala@naver.com", "19971109", Male.남, "01011112222" ,"1111");
 
         //when
 
@@ -47,6 +47,9 @@ class MemberServiceTest {
 
         //when
         memberService.joinMember(member);
+        em.flush();
+        em.clear();
+
         //then
         assertEquals(member.getId(),memberRepository.findMemberById(member.getId()).getId());
     }
@@ -80,17 +83,17 @@ class MemberServiceTest {
     @Test
     public void 비밀번호변경() throws Exception{
         //given
-        Member member = new Member("회원1", "test234@naver.com", "19971109", Male.남, "01011112222",":123");
-        member.updatePasswd("ft1333");
+        String encode = passwordEncoder.encode("1111");
+        Member member = new Member("회원1", "tw4@naver.com", "19971109", Male.남, "01011112222",encode);
         em.persist(member);
-        em.flush();
-        String passwd = "ft1333";
         //when
-        memberService.updatePasswd(member.getId(),passwd,"ft1333");
+        System.out.println(member.getId());
+        memberService.updatePasswd(member.getId(), "1111","ft1333");
         em.flush();
+        em.clear();
         //then
         Member findMember = memberRepository.findMemberById(member.getId());
         System.out.println(findMember.getEmail());
-        Assert.assertEquals(true,passwordEncoder.matches(passwd, findMember.getPasswd()));
+        Assert.assertEquals(true,passwordEncoder.matches("ft1333", findMember.getPasswd()));
     }
 }

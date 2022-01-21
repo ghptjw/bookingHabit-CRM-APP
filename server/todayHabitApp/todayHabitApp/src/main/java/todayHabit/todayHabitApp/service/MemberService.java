@@ -27,15 +27,11 @@ public class MemberService {
     private final FirebaseRepository firebaseRepository;
 
     @Transactional
-    public Long joinMember(Member member) {
-        try{
-            validateDuplicateMember(member);
-            memberRepository.saveMember(member);
-            firebaseRepository.initialize();
-            firebaseRepository.saveMember(member);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    public Long joinMember(Member member) throws Exception{
+        validateDuplicateMember(member);
+        memberRepository.saveMember(member);
+        firebaseRepository.initialize();
+        firebaseRepository.saveMember(member);
         return member.getId();
     }
 
@@ -86,8 +82,9 @@ public class MemberService {
         firebaseRepository.updateMemberGymId(findMember,encodingPasswd);
     }
 
-    private void validateDuplicateMember(Member member) {
+    private void validateDuplicateMember(Member member) throws Exception{
         List<Member> findMember = memberRepository.findMemberByEmail(member.getEmail());
+        System.out.println("findMember.size() = " + findMember.size());
         if (!findMember.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
