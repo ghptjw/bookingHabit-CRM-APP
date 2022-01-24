@@ -35,11 +35,13 @@ public class MemberRepository {
     }
 
     public List<MemberOwnMembership> findMemberOwnMembershipByGymId(Long memberId, Long gymId) {
-        return em.createQuery("select mom from MemberOwnMembership " +
+        return em.createQuery("select mom from MemberOwnMembership mom" +
                         " join mom.gym g" +
+                        " join mom.member mb " +
                         " join fetch mom.membership m" +
+                        " join fetch mom.holdingMemberships h" +
                         " where g.id = :gymId " +
-                        " and m.id = :memberId")
+                        " and mb.id = :memberId")
                 .setParameter("gymId", gymId)
                 .setParameter("memberId", memberId)
                 .getResultList();

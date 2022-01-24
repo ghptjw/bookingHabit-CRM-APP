@@ -1,8 +1,10 @@
-package todayHabit.todayHabitApp.domain.member;
+package todayHabit.todayHabitApp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import todayHabit.todayHabitApp.domain.gym.Gym;
+import todayHabit.todayHabitApp.domain.member.Member;
+import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.schedule.Schedule;
 
 import javax.persistence.*;
@@ -10,8 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "member_class")
-public class MemberClass {
+public class WaitingMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,18 +38,15 @@ public class MemberClass {
     private MemberOwnMembership memberOwnMembership;
 
     private LocalDateTime date;
-    private int attend;
+    private int waitingNumber;
 
-    protected MemberClass() {
-
-    }
-
-    public MemberClass(Gym gym, Schedule schedule, Member member, MemberOwnMembership memberOwnMembership) {
+    public WaitingMember(Gym gym, Schedule schedule, Member member, MemberOwnMembership memberOwnMembership, int waitingNumber) {
         this.gym = gym;
         this.schedule = schedule;
         this.member = member;
         this.memberOwnMembership = memberOwnMembership;
         this.date = LocalDateTime.now();
-        this.attend = 0;
+        this.waitingNumber = waitingNumber;
     }
+
 }

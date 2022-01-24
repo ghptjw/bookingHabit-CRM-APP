@@ -51,10 +51,10 @@ public class MemberController {
         return "수정이 완료되었습니다.";
     }
 
-    @GetMapping("/member/gymList")
+    @GetMapping("/member/changeGym/{gymId}/{memberId}")
     public List<MemberOwnMembershipsDto> changeMembershipByGymId(
-            @PathVariable("id") Long memberId,
-            @PathVariable("id") Long gymId) throws Exception{
+            @PathVariable("memberId") Long memberId,
+            @PathVariable("gymId") Long gymId) throws Exception{
         return memberService.changeMemberOwnMembership(memberId, gymId);
     }
 

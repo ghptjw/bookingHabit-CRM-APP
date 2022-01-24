@@ -38,4 +38,8 @@ public class ClassRepository {
                 .getResultList();
         return classList;
     }
+
+    public Schedule findById(Long classId) {
+        return em.find(Schedule.class, classId);
+    }
 }

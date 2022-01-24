@@ -15,6 +15,10 @@ import java.util.Optional;
 public class GymRepository {
     private final EntityManager em;
 
+    public Gym findById(Long id) {
+        return em.find(Gym.class, id);
+    }
+
     public Optional<Gym> findGymBySerialNumber(String serialNumber) {
         System.out.println("serialNumber = " + serialNumber);
         return Optional.ofNullable(em.createQuery("select g from Gym g where g.serialNumber = :serialNumber", Gym.class)
