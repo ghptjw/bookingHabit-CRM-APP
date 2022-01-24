@@ -8,6 +8,7 @@ import todayHabit.todayHabitApp.domain.member.MemberClass;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembershipClassType;
 import todayHabit.todayHabitApp.dto.schedule.DayClassDto;
+import todayHabit.todayHabitApp.error.ReserveBlockException;
 import todayHabit.todayHabitApp.repository.ClassRepository;
 import todayHabit.todayHabitApp.repository.MemberClassRepository;
 import todayHabit.todayHabitApp.repository.MemberOwnMembershipRepository;
@@ -30,7 +31,7 @@ public class ClassService {
     public List<DayClassDto> DayClass(LocalDate date, Long gymId, Long membershipId) throws Exception{
         List<ReserveBlock> reserveBlocks = reserveBlockRepository.findByStartDay(date);
         if(!reserveBlocks.isEmpty()){
-            throw new IllegalStateException("예약 차단된 날짜입니다.");
+            throw new ReserveBlockException();
         }
         List<Long> classTypeList = new ArrayList();
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(membershipId);
@@ -47,7 +48,7 @@ public class ClassService {
     public List<DayClassDto> BeforeDayClass(LocalDate date, Long gymId, Long membershipId) throws Exception{
         List<ReserveBlock> reserveBlocks = reserveBlockRepository.findByStartDay(date);
         if(!reserveBlocks.isEmpty()){
-            throw new IllegalStateException("예약 차단된 날짜입니다.");
+            throw new ReserveBlockException();
         }
         List<MemberClass> classLists = memberClassRepository.findByMemberOwnMembershipId(date, gymId, membershipId);
         return classLists.stream().map(classList -> new DayClassDto(classList))

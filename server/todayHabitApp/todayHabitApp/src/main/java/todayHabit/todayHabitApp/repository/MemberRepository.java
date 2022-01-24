@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.Member;
+import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -33,4 +34,14 @@ public class MemberRepository {
                 .getResultList();
     }
 
+    public List<MemberOwnMembership> findMemberOwnMembershipByGymId(Long memberId, Long gymId) {
+        return em.createQuery("select mom from MemberOwnMembership " +
+                        " join mom.gym g" +
+                        " join fetch mom.membership m" +
+                        " where g.id = :gymId " +
+                        " and m.id = :memberId")
+                .setParameter("gymId", gymId)
+                .setParameter("memberId", memberId)
+                .getResultList();
+    }
 }

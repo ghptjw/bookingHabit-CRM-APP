@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
+import todayHabit.todayHabitApp.error.AlreadyExistMemberException;
 import todayHabit.todayHabitApp.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
@@ -35,7 +36,7 @@ class MemberServiceTest {
         //when
 
         //then
-        assertThrows(IllegalStateException.class, () -> {
+        assertThrows(AlreadyExistMemberException.class, () -> {
             memberService.joinMember(member);
         });
     }

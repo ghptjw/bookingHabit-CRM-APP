@@ -28,7 +28,7 @@ public class LoginMemberDto {
     private Male male;
     private String phone;
 
-    private List<memberOwnMembershipsDto> memberOwnMemberships;
+    private List<MemberOwnMembershipsDto> memberOwnMemberships;
     private List<gymListDto> gymList;
 
     public LoginMemberDto(Member member) {
@@ -40,7 +40,7 @@ public class LoginMemberDto {
         this.male = member.getMale();
         this.phone = member.getPhone();
         this.memberOwnMemberships = member.getMemberOwnMemberships().stream()
-                .map(memberOwnMembership -> new memberOwnMembershipsDto(memberOwnMembership))
+                .map(memberOwnMembership -> new MemberOwnMembershipsDto(memberOwnMembership))
                 .collect(toList());
         this.gymList = member.getGymList().stream()
                 .map(gymList -> new gymListDto(gymList.getGym()))
@@ -89,67 +89,7 @@ public class LoginMemberDto {
         }
     }
 
-    @Data
-    static class memberOwnMembershipsDto {
-        private Long id;
-        private String name;
-        private LocalDate startDay;
-        private LocalDate endDay;
-        private int countClass;
-        private int payment;
-        private int DayAttend;
-        private int weekAttend;
-        private LocalDateTime registerDate;
-        private int maxCountClass;
-        private boolean available;
-        private List<MembershipClassTypeDto> membershipClassType;
-        private List<HoldingMembershipDto> holdingMembershipDtoList;
 
-        public memberOwnMembershipsDto(MemberOwnMembership memberOwnMembership) {
-            this.id = memberOwnMembership.getId();
-            this.name = memberOwnMembership.getMembership().getName();
-            this.startDay = memberOwnMembership.getStartDay();
-            this.endDay = memberOwnMembership.getEndDay();
-            this.countClass = memberOwnMembership.getCountClass();
-            this.payment = memberOwnMembership.getPayment();
-            this.DayAttend = memberOwnMembership.getDayAttend();
-            this.weekAttend = memberOwnMembership.getWeekAttend();
-            this.registerDate = memberOwnMembership.getRegisterDate();
-            this.maxCountClass = memberOwnMembership.getMaxCountClass();
-            this.available = memberOwnMembership.getAvailable();
-            this.membershipClassType = memberOwnMembership.getMembershipClassTypes().stream()
-                    .map(membershipClassType -> new MembershipClassTypeDto(membershipClassType))
-                    .collect(toList());
-            this.holdingMembershipDtoList = memberOwnMembership.getHoldingMemberships().stream()
-                    .map(holdingMembership -> new HoldingMembershipDto(holdingMembership))
-                    .collect(toList());
-        }
-
-        @Data
-        static class MembershipClassTypeDto{
-            private Long id;
-            private String name;
-
-            public MembershipClassTypeDto(MemberOwnMembershipClassType memberOwnMembershipClassType){
-                this.id = memberOwnMembershipClassType.getId();
-                this.name = memberOwnMembershipClassType.getClassTypeName();
-            }
-        }
-        @Data
-        private static class HoldingMembershipDto {
-            private Long id;
-            private Long membershipId;
-            private int holdingPeriod;
-            private int usingPeriod;
-
-            public HoldingMembershipDto(HoldingMembership holdingMembership) {
-                this.id = holdingMembership.getId();
-                this.membershipId = holdingMembership.getMemberOwnMembership().getId();
-                this.holdingPeriod = holdingMembership.getHoldingPeriod();
-                this.usingPeriod = holdingMembership.getUsingPeriod();
-            }
-        }
-    }
 
 
 }

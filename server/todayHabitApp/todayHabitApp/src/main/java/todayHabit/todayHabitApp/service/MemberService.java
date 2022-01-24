@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.gym.GymContainMember;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.gym.Gym;
+import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
+import todayHabit.todayHabitApp.dto.member.MemberOwnMembershipsDto;
+import todayHabit.todayHabitApp.error.*;
 import todayHabit.todayHabitApp.firebase.FirebaseRepository;
 import todayHabit.todayHabitApp.repository.GymContainMemberRepository;
 import todayHabit.todayHabitApp.repository.GymRepository;
@@ -15,6 +18,7 @@ import todayHabit.todayHabitApp.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,11 +40,11 @@ public class MemberService {
     }
 
     @Transactional
-    public String updateCenterInfo(String serialNumber, Long memberId) {
+    public String updateCenterInfo(String serialNumber, Long memberId) throws Exception {
         firebaseRepository.initialize();
         Optional<Gym> findGym = gymRepository.findGymBySerialNumber(serialNumber);
         if(findGym.isEmpty()){
-            throw new IllegalStateException("존재하지 않는 센터입니다.");
+            throw new NonExistGymException();
         }
         Member findMember = memberRepository.findMemberById(memberId);
         Gym gym = findGym.get();
@@ -53,7 +57,7 @@ public class MemberService {
         if(gymContainMemberList.isEmpty()) { // 등록된 센터가 아닐 때 -- 센터 등록
             gymRepository.insertGymContainMember(gym, findMember);
         }else{
-            throw new IllegalStateException("이미 등록된 센터입니다.");
+            throw new AlreadyRegisterException();
         }
         return "등록이 완료되었습니다.";
     }
@@ -61,12 +65,12 @@ public class MemberService {
     public LoginMemberDto logIn(String email, String passwd) throws Exception{
         List<Member> findMember = memberRepository.findMemberByEmail(email);
         if(findMember.isEmpty()){
-            throw new IllegalStateException("존재 하지 않는 회원입니다");
+            throw new NotExistMemberException();
         }
         if(passwordEncoder.matches(passwd,findMember.get(0).getPasswd())){
             return new LoginMemberDto(findMember.get(0));
         }else{
-            throw new IllegalStateException("패스워드가 틀렸습니다");
+            throw new NotCorrectPasswdException();
         }
     }
 
@@ -75,7 +79,7 @@ public class MemberService {
         firebaseRepository.initialize();
         Member findMember = memberRepository.findMemberById(memberId);
         if (!passwordEncoder.matches(beforePasswd, findMember.getPasswd())) {
-            throw new IllegalStateException("패스워드가 틀렸습니다");
+            throw new NotCorrectPasswdException();
         }
         String encodingPasswd = passwordEncoder.encode(newPasswd);
         findMember.updatePasswd(encodingPasswd);
@@ -86,7 +90,14 @@ public class MemberService {
         List<Member> findMember = memberRepository.findMemberByEmail(member.getEmail());
         System.out.println("findMember.size() = " + findMember.size());
         if (!findMember.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+            throw new AlreadyExistMemberException();
         }
+    }
+
+    public List<MemberOwnMembershipsDto> changeMemberOwnMembership(Long memberId, Long gymId) {
+        List<MemberOwnMembership> membershipList = memberRepository.findMemberOwnMembershipByGymId(memberId, gymId);
+        return membershipList.stream()
+                .map(membership -> new MemberOwnMembershipsDto(membership))
+                .collect(Collectors.toList());
     }
 }

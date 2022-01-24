@@ -8,10 +8,12 @@ import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.dto.member.CreateMemberDto;
 import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
+import todayHabit.todayHabitApp.dto.member.MemberOwnMembershipsDto;
 import todayHabit.todayHabitApp.service.MemberService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,7 +34,7 @@ public class MemberController {
     }
 
     @PutMapping("/member/update/gym/{id}")
-    public String updateMemberGymCode(@PathVariable("id") Long id, @RequestBody @Valid UpdateMemberGymInfo request) {
+    public String updateMemberGymCode(@PathVariable("id") Long id, @RequestBody @Valid UpdateMemberGymInfo request) throws Exception{
         memberService.updateCenterInfo(request.getSerialNumber(), id);
         return "수정이 완료되었습니다.";
     }
@@ -47,6 +49,13 @@ public class MemberController {
     public String updateMemberPasswd(@PathVariable("id") Long id, @RequestBody @Valid UpdateMemberPasswd request) throws Exception {
         memberService.updatePasswd(id, request.getBeforePasswd(), request.getNewPasswd());
         return "수정이 완료되었습니다.";
+    }
+
+    @GetMapping("/member/gymList")
+    public List<MemberOwnMembershipsDto> changeMembershipByGymId(
+            @PathVariable("id") Long memberId,
+            @PathVariable("id") Long gymId) throws Exception{
+        return memberService.changeMemberOwnMembership(memberId, gymId);
     }
 
     /*
