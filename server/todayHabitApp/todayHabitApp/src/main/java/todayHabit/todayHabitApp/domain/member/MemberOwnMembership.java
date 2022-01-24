@@ -66,5 +66,8 @@ public class MemberOwnMembership {
         }
     }
 
+    public void increaseMembership() {
+        this.countClass += 1;
+    }
 }
 

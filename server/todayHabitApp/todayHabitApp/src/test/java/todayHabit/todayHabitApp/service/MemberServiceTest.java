@@ -9,10 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.Male;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
+import todayHabit.todayHabitApp.dto.member.MemberOwnMembershipsDto;
 import todayHabit.todayHabitApp.error.AlreadyExistMemberException;
 import todayHabit.todayHabitApp.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -88,7 +91,6 @@ class MemberServiceTest {
         Member member = new Member("회원1", "tw4@naver.com", "19971109", Male.남, "01011112222",encode);
         em.persist(member);
         //when
-        System.out.println(member.getId());
         memberService.updatePasswd(member.getId(), "1111","ft1333");
         em.flush();
         em.clear();
@@ -96,5 +98,15 @@ class MemberServiceTest {
         Member findMember = memberRepository.findMemberById(member.getId());
         System.out.println(findMember.getEmail());
         Assert.assertEquals(true,passwordEncoder.matches("ft1333", findMember.getPasswd()));
+    }
+
+    @Test
+    public void 센터정보변경_회원권변경() throws Exception{
+        //given
+        List<MemberOwnMembershipsDto> memberOwnMembershipsDtos = memberService.changeMemberOwnMembership(193l, 5l);
+        //when
+
+        //then
+        assertEquals(1, memberOwnMembershipsDtos.size());
     }
 }

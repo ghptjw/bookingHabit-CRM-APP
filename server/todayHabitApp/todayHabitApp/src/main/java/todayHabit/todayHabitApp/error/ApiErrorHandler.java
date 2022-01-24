@@ -51,14 +51,38 @@ public class ApiErrorHandler extends Exception {
         ApiException apiException = new ApiException("비밀번호가 틀렸습니다.", httpStatus, LocalDateTime.now());
         return new ResponseEntity<>(apiException, httpStatus);
     }
+    
     @ExceptionHandler(value = AlreadyExistMemberException.class)
     public ResponseEntity<Object> AlreadyExistMemberException(AlreadyExistMemberException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ApiException apiException = new ApiException("이미 존재하는 회원입니다.", httpStatus, LocalDateTime.now());
         return new ResponseEntity<>(apiException, httpStatus);
     }
+    
+    /*
+    * ClassService 에러 핸들러
+    * */
 
+    @ExceptionHandler(value = TimeoutReserveException.class)
+    public ResponseEntity<Object> TimeoutReserveException(TimeoutReserveException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("예약 가능 시간이 지났습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
 
+    @ExceptionHandler(value = MaxClassException.class)
+    public ResponseEntity<Object> MaxClassException(TimeoutReserveException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("예약 정원이 다찼습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    @ExceptionHandler(value = AlreadyReserveClassException.class)
+    public ResponseEntity<Object> AlreadyReserveClassException(AlreadyReserveClassException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("이미 예약 중인 회원입니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
 
 
     @Data

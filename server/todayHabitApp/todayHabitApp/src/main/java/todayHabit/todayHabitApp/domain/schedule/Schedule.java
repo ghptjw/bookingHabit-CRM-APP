@@ -51,5 +51,7 @@ public class Schedule {
     private String cycle;
 
 
-
+    public void increaseCount() {
+        this.reserveNumber += 1;
+    }
 }
