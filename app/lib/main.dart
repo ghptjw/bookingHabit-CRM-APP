@@ -8,6 +8,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  // StatelessWidget build 기반으로 화면을 그린다.
   final int todayGreen = 0xff16AA83;
 
   @override

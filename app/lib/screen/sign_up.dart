@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 
 enum Gender { man, women }
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final bool _isChecked = false;
 
   @override
@@ -42,6 +48,9 @@ class SignUpPage extends StatelessWidget {
                 return null;
               },
             ),
+            SizedBox(
+              height: size.height * 0.02,
+            ),
             TextFormField(
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
@@ -58,6 +67,9 @@ class SignUpPage extends StatelessWidget {
                 }
                 return null;
               },
+            ),
+            SizedBox(
+              height: size.height * 0.02,
             ),
             TextFormField(
               textCapitalization: TextCapitalization.words,
@@ -76,6 +88,9 @@ class SignUpPage extends StatelessWidget {
                 return null;
               },
             ),
+            SizedBox(
+              height: size.height * 0.02,
+            ),
             TextFormField(
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
@@ -93,11 +108,6 @@ class SignUpPage extends StatelessWidget {
                 return null;
               },
             ),
-            // Checkbox(value: _isChecked, onChanged: (value) {
-            //   setState(() {
-            //     _isChecked = value
-            //   }),
-            // })
           ],
         ),
       ),

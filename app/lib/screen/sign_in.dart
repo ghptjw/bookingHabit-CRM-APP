@@ -17,16 +17,22 @@ class AuthPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
             child: Container(
-          padding: EdgeInsets.all(size.width * 0.05),
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
           color: const Color(0xfffcfcfc),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(
+                height: size.height * 0.07,
+              ),
               Image.asset(
                 'assets/images/logo.png',
                 width: size.width * 0.6,
-                height: size.height * 0.35,
+                height: size.height * 0.2,
+              ),
+              SizedBox(
+                height: size.height * 0.04,
               ),
               _inputForm(size),
               SizedBox(
@@ -38,7 +44,7 @@ class AuthPage extends StatelessWidget {
               ),
               _pageRoutingBtn(),
               SizedBox(
-                height: size.height * 0.15,
+                height: size.height * 0.2,
               ),
               const Text(
                 '파트너사 가입을 원하시나요?',
@@ -49,7 +55,7 @@ class AuthPage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.1,
+                height: size.height * 0.03,
               ),
               const Text(
                 '좋은습관',
@@ -119,12 +125,18 @@ class AuthPage extends StatelessWidget {
     return Form(
         key: _formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             TextFormField(
               controller: _emailController,
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
+                fillColor: Color(0xfffcfcfc),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff16AA83)),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
                 border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white, width: 2.0),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -144,6 +156,12 @@ class AuthPage extends StatelessWidget {
               obscureText: true,
               controller: _passwordController,
               decoration: const InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff16AA83)),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                fillColor: Color(0xfffcfcfc),
+                focusColor: Color(0xff16AA83),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: '비밀번호',
@@ -160,7 +178,7 @@ class AuthPage extends StatelessWidget {
   }
 
   Widget _authButton(Size size) {
-    return ElevatedButton(
+    return OutlinedButton(
         autofocus: true,
         onPressed: () {
           if (_formKey.currentState != null) {
@@ -170,26 +188,17 @@ class AuthPage extends StatelessWidget {
           }
         },
         child: const Text('로그인'),
-        style: ElevatedButton.styleFrom(
+        style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
                 //모서리를 둥글게
                 borderRadius: BorderRadius.circular(10)),
-            primary: const Color(0xffe8e8e8),
-            onPrimary: const Color(0xffBCBCBC),
+            side: const BorderSide(
+              style: BorderStyle.none,
+            ),
+            primary: const Color(0xffBCBCBC),
+            // onPrimary: const Color(0xffBCBCBC),
+            backgroundColor: const Color(0xffe8e8e8),
             minimumSize: const Size(double.infinity, 55),
             textStyle: const TextStyle(fontSize: 20)));
   }
-
-  // Widget _logoImage() {
-  //   return Expanded(
-  //       child: Padding(
-  //     padding: const EdgeInsets.only(top: 40, left: 24, right: 24),
-  //     child: FittedBox(
-  //       fit: BoxFit.contain,
-  //       child: Image.asset(
-  //         'assets/images/logo.png',
-  //       ),
-  //     ),
-  //   ));
-  // }
 }
