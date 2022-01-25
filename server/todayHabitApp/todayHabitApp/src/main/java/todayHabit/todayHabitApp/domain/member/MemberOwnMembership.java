@@ -66,8 +66,16 @@ public class MemberOwnMembership {
         }
     }
 
-    public void increaseMembership() {
-        this.countClass += 1;
+    public boolean increaseMembership(int count) {
+        if (this.countClass + count > this.maxCountClass) {
+            return false;
+        }
+        this.countClass += count;
+        return true;
+    }
+
+    public void decreaseMembership(int count) {
+        this.countClass -= count;
     }
 }
 
