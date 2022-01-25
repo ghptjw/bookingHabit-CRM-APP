@@ -10,12 +10,10 @@ import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.member.MemberClass;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembershipClassType;
+import todayHabit.todayHabitApp.domain.schedule.ClassHistory;
 import todayHabit.todayHabitApp.domain.schedule.Schedule;
 import todayHabit.todayHabitApp.dto.schedule.DayClassDto;
-import todayHabit.todayHabitApp.error.AlreadyReserveClassException;
-import todayHabit.todayHabitApp.error.MaxClassException;
-import todayHabit.todayHabitApp.error.ReserveBlockException;
-import todayHabit.todayHabitApp.error.TimeoutReserveException;
+import todayHabit.todayHabitApp.error.*;
 import todayHabit.todayHabitApp.repository.*;
 
 import java.time.LocalDate;
@@ -36,7 +34,7 @@ public class ClassService {
     private final ReserveBlockRepository reserveBlockRepository;
     private final GymRepository gymRepository;
     private final WaitingMemberRepository waitingMemberRepository;
-
+    private final ClassHistoryRepository classHistoryRepository;
 
     public List<DayClassDto> DayClass(LocalDate date, Long gymId, Long membershipId) throws Exception{
         List<ReserveBlock> reserveBlocks = reserveBlockRepository.findByStartDay(date);
@@ -75,6 +73,7 @@ public class ClassService {
         // 2-2-2 수업 정원 증가
         // 2-2-3 수업 인원 리스트 삽입
         // 2-2. 예약 정원이 없으면 대기 가능인원 확인
+        // 2-2-0 센터 대기 가능 인원 세기
         // 2-2-1 회원권 차감
         // 2-2-2 대기 인원에 추가
         Gym gymInfo = gymRepository.findById(gymId);
@@ -83,25 +82,37 @@ public class ClassService {
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(membershipId);
         List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassId(memberId, classId);
         List<WaitingMember> waitingMemberList = waitingMemberRepository.findByMemberIdWithClassId(memberId, classId);
-        LocalDateTime startTime = LocalDateTime.of(classInfo.getStartDay(), classInfo.getStartTime());
-        LocalDateTime reservableTime = startTime.minusMinutes(gymInfo.getReservableTime());
+        LocalDateTime reservableTime = LocalDateTime
+                .of(classInfo.getStartDay(), classInfo.getStartTime())
+                .minusMinutes(gymInfo.getReservableTime());
         if (LocalDateTime.now().isAfter(reservableTime)) { // 현재 시간이 예약 가능 시간 보다 지났을 때 예약 불가능
             throw new TimeoutReserveException();
-        }else if(!memberClassList.isEmpty() || !waitingMemberList.isEmpty()) {
+        }else if(!memberClassList.isEmpty() || !waitingMemberList.isEmpty()) { // 이미 예약된 회원일 때
             throw new AlreadyReserveClassException();
         }else if (classInfo.getTotalReservation() <= classInfo.getReserveNumber()) { //예약 정원이 다찼을 때 -> 대기
             int waitingNumber;
-            Optional<WaitingMember> maxWaitingNumber = waitingMemberRepository.findMaxWaitingNumber(classId);
-            if (maxWaitingNumber.isEmpty()) {
-                waitingNumber = 0;
+            Optional<Integer> maxWaitingNumber = waitingMemberRepository.findMaxWaitingNumber(classId);
+            ClassHistory classHistory = new ClassHistory(gymInfo, classInfo, memberInfo, 3);
+            classHistoryRepository.save(classHistory);
+            if (maxWaitingNumber.isEmpty()) { 
+                waitingNumber = 1;
             } else {
-                waitingNumber = maxWaitingNumber.get().getWaitingNumber();
+                waitingNumber = maxWaitingNumber.get().intValue();
             }
-            membership.increaseMembership();
+            if (waitingNumber >= gymInfo.getLimitWaitingMember()) {
+                throw new MaxWaitingMemberException();
+            }
+            boolean checkAvailable = membership.increaseMembership(classInfo.getDecrease());
+            if (!checkAvailable) { // 회원권이 모자를 때
+                throw new NotEnoughMembershipException();
+            }
             WaitingMember waitingMember = new WaitingMember(gymInfo, classInfo, memberInfo, membership, waitingNumber);
+            waitingMemberRepository.save(waitingMember);
             return "대기 인원으로 등록 완료되었습니다.";
         } else { // 예약 가능
-            membership.increaseMembership();
+            ClassHistory classHistory = new ClassHistory(gymInfo, classInfo, memberInfo, 0);
+            classHistoryRepository.save(classHistory);
+            membership.increaseMembership(classInfo.getDecrease());
             classInfo.increaseCount();
             MemberClass memberClass = new MemberClass(gymInfo, classInfo, memberInfo, membership);
             memberClassRepository.save(memberClass);
@@ -109,5 +120,65 @@ public class ClassService {
         }
     }
 
+
+    @Transactional
+    public String cancelClass(Long memberId, Long gymId, Long membershipId, Long classId) {
+        // 1.예약 취소 가능 시간인지 확인
+        // 2-1 예약 회원
+        // 2-1-1 예약 리스트 삭제
+        // 2-1-2 회원권 복구
+        // 2-1-2 수업 회원 수 복구
+        // 2-1-3 대기 인원 번호 변경
+        // 2-2 대기 회원
+        // 2-2-1 회원권 복구
+        // 2-2-2 대기 인원 번호 변경
+        // 2-2-3 대기 리스트 삭제
+
+        Gym gymInfo = gymRepository.findById(gymId);
+        Member memberInfo = memberRepository.findMemberById(memberId);
+        Schedule classInfo = classRepository.findById(classId);
+        MemberOwnMembership membership = memberOwnMembershipRepository.findById(membershipId);
+        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassId(memberId, classId);
+        List<WaitingMember> waitingMemberList = waitingMemberRepository.findByMemberIdWithClassId(memberId, classId);
+        LocalDateTime ableCancelTime = LocalDateTime
+                .of(classInfo.getStartDay(), classInfo.getStartTime())
+                .minusMinutes(gymInfo.getCancelReserveTime());
+        ClassHistory classHistory = new ClassHistory(gymInfo, classInfo, memberInfo, 4);
+        classHistoryRepository.save(classHistory);
+        if (LocalDateTime.now().isAfter(ableCancelTime)) { // 현재 시간이 예약 가능 시간 보다 지났을 때 예약 불가능
+            throw new TimeoutCancelException();
+        }else if(!memberClassList.isEmpty()) { //예약 회원일 때
+            membership.decreaseMembership(classInfo.getDecrease());
+            classInfo.decreaseCount();
+            memberClassRepository.deleteById(memberClassList.get(0));
+            List<WaitingMember> waitingList = waitingMemberRepository.findByClassId(classId);
+            for (WaitingMember waitingMember : waitingList) {
+                if (waitingMember.getWaitingNumber() == 1) {
+                    classInfo.increaseCount();
+                    MemberClass memberClass = new MemberClass(waitingMember.getGym(), waitingMember.getSchedule(),
+                            waitingMember.getMember(), waitingMember.getMemberOwnMembership());
+                    ClassHistory classWaitingHistory = new ClassHistory(waitingMember.getGym(), waitingMember.getSchedule(),
+                            waitingMember.getMember(), 0);
+                    waitingMemberRepository.deleteById(waitingMember);
+                    classHistoryRepository.save(classWaitingHistory);
+                    memberClassRepository.save(memberClass);
+                }else{
+                    waitingMember.changeWaitingNumber();
+                }
+            }
+            return "예약 취소가 완료되었습니다.";
+        }else if (!waitingMemberList.isEmpty()) { //대기 회원일 때\
+            membership.decreaseMembership(classInfo.getDecrease());
+            waitingMemberRepository.deleteById(waitingMemberList.get(0));
+            List<WaitingMember> waitingList =
+                    waitingMemberRepository.findByBehindWaitingMember(classId, waitingMemberList.get(0).getWaitingNumber());
+            for (WaitingMember waitingMember : waitingList) {
+                waitingMember.changeWaitingNumber();
+            }
+            return "대기 취소가 완료되었습니다.";
+        }else{
+            throw new IllegalStateException("예약이 안되어있는 회원입니다.");
+        }
+    }
 }
 

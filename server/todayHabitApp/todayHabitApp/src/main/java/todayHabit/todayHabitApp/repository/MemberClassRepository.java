@@ -2,6 +2,7 @@ package todayHabit.todayHabitApp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.member.MemberClass;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberClassRepository {
 
     private final EntityManager em;
@@ -32,6 +34,7 @@ public class MemberClassRepository {
                 .getResultList();
     }
 
+    @Transactional
     public void save(MemberClass memberClass) {
         em.persist(memberClass);
     }
@@ -48,6 +51,8 @@ public class MemberClassRepository {
                 .getResultList();
     }
 
-
-
+    @Transactional
+    public void deleteById(MemberClass memberClass) {
+        em.remove(memberClass);
+    }
 }

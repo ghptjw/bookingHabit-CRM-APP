@@ -84,6 +84,27 @@ public class ApiErrorHandler extends Exception {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+    @ExceptionHandler(value = MaxWaitingMemberException.class)
+    public ResponseEntity<Object> MaxWaitingMemberException(MaxWaitingMemberException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("대기가능 인원이 다 찼습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    @ExceptionHandler(value = NotEnoughMembershipException.class)
+    public ResponseEntity<Object> NotEnoughMembershipException(NotEnoughMembershipException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("회원권 잔여횟수가 모자릅니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    @ExceptionHandler(value = TimeoutCancelException.class)
+    public ResponseEntity<Object> TimeoutCancelException(TimeoutCancelException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("예약 취소 가능시간이 지났습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 
     @Data
     @AllArgsConstructor

@@ -34,6 +34,14 @@ public class ClassController {
         return result;
     }
 
+    @PostMapping("/class/cancel")
+    public String cancelClass(@RequestBody reserveClassDto request) throws Exception{
+        String result = classService.cancelClass(request.getMemberId(), request.getGymId(),
+                request.getMembershipId(), request.getClassId());
+        return result;
+    }
+
+
     @Data
     static class AfterDayDto {
         @NotNull

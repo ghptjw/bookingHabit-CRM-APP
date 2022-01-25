@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import todayHabit.todayHabitApp.domain.classType.ClassType;
 import todayHabit.todayHabitApp.domain.gym.Gym;
-import todayHabit.todayHabitApp.dto.member.ClassHistory;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -53,5 +52,9 @@ public class Schedule {
 
     public void increaseCount() {
         this.reserveNumber += 1;
+    }
+
+    public void decreaseCount() {
+        this.reserveNumber -= 1;
     }
 }

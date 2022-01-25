@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Table(name = "waitingMember")
 public class WaitingMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +41,10 @@ public class WaitingMember {
     private LocalDateTime date;
     private int waitingNumber;
 
+    protected WaitingMember() {
+
+    }
+
     public WaitingMember(Gym gym, Schedule schedule, Member member, MemberOwnMembership memberOwnMembership, int waitingNumber) {
         this.gym = gym;
         this.schedule = schedule;
@@ -49,4 +54,7 @@ public class WaitingMember {
         this.waitingNumber = waitingNumber;
     }
 
+    public void changeWaitingNumber() {
+        this.waitingNumber -= 1;
+    }
 }
