@@ -19,8 +19,8 @@ public class ClassRepository {
         String query = "select s from Schedule s" +
                 " join fetch s.classType ct " +
                 " join s.gym g" +
-                " join fetch s.coachClasses cc" +
-                " join fetch cc.coach co" +
+                " left join fetch s.coachClasses cc" +
+                " left join fetch cc.coach co" +
                 " where s.startDay = :startDay " +
                 " and g.id = :gymId";
         if (classTypeList.size() != 0) {

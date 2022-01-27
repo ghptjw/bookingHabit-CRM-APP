@@ -58,6 +58,12 @@ public class MemberController {
         return memberService.changeMemberOwnMembership(memberId, gymId);
     }
 
+    @PostMapping("/member/change/bookmark")
+    public String bookmarkGym(@RequestBody BookmarkInfo request ) throws Exception {
+        memberService.bookmarkGym(request.getOldGymId(), request.getNewGymId(), request.getMemberId());
+        return "즐겨찾기가 완료되었습니다.";
+    }
+
     /*
      * data
      * */
@@ -82,6 +88,17 @@ public class MemberController {
         private String email;
         @NotEmpty(message = "비밀번호를 입력해주세요.")
         private String passwd;
+
+    }
+
+    @Data
+    static class BookmarkInfo {
+        @NotEmpty
+        private Long oldGymId;
+        @NotEmpty
+        private Long newGymId;
+        @NotEmpty
+        private Long memberId;
 
     }
 }

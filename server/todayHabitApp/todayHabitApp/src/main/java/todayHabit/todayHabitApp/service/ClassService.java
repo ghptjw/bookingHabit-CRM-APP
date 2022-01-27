@@ -47,10 +47,16 @@ public class ClassService {
         for (MemberOwnMembershipClassType membershipClassType : membershipClassTypes) {
             classTypeList.add(membershipClassType.getClassType().getId());
         }
-
-        return classRepository.findClassByDate(date, gymId, classTypeList).stream()
+        List<DayClassDto> classLists = classRepository.findClassByDate(date, gymId, classTypeList).stream()
                 .map(classList -> new DayClassDto(classList))
                 .collect(Collectors.toList());
+        for (DayClassDto dayClassDto : classLists) {
+            List<MemberClass> classInfo = memberClassRepository.findByMemberIdWithClassId(membershipId, dayClassDto.getClassId());
+            if (!classInfo.isEmpty()) { // 예약한 회원이라면
+                dayClassDto.changeReserve();
+            }
+        }
+        return classLists;
     }
 
     public List<DayClassDto> BeforeDayClass(LocalDate date, Long gymId, Long membershipId) throws Exception{
@@ -80,7 +86,7 @@ public class ClassService {
         Member memberInfo = memberRepository.findMemberById(memberId);
         Schedule classInfo = classRepository.findById(classId);
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(membershipId);
-        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassId(memberId, classId);
+        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassIdByDate(memberId, classId);
         List<WaitingMember> waitingMemberList = waitingMemberRepository.findByMemberIdWithClassId(memberId, classId);
         LocalDateTime reservableTime = LocalDateTime
                 .of(classInfo.getStartDay(), classInfo.getStartTime())
@@ -138,7 +144,7 @@ public class ClassService {
         Member memberInfo = memberRepository.findMemberById(memberId);
         Schedule classInfo = classRepository.findById(classId);
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(membershipId);
-        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassId(memberId, classId);
+        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassIdByDate(memberId, classId);
         List<WaitingMember> waitingMemberList = waitingMemberRepository.findByMemberIdWithClassId(memberId, classId);
         LocalDateTime ableCancelTime = LocalDateTime
                 .of(classInfo.getStartDay(), classInfo.getStartTime())

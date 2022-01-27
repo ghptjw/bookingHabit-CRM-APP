@@ -27,8 +27,20 @@ public class GymContainMember {
     @JsonIgnore
     private Member member;
 
+    @Enumerated(EnumType.STRING)
+    private GymBookmark bookmark;
+
     public GymContainMember(Gym gym, Member member) {
         this.gym = gym;
         this.member = member;
+        this.bookmark = GymBookmark.일반;
+    }
+
+    public void BookmarkGym() {
+        this.bookmark = GymBookmark.즐겨찾기;
+    }
+
+    public void UnBookmarkGym() {
+        this.bookmark = GymBookmark.일반;
     }
 }

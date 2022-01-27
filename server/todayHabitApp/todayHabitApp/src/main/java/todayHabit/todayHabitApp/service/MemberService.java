@@ -50,12 +50,13 @@ public class MemberService {
         Gym gym = findGym.get();
         List<GymContainMember> gymContainMemberList
                 = gymRepository.findGymContainMemberByGymIdWithMemberId(gym.getId(), findMember.getId());
+        GymContainMember gymContainMember = new GymContainMember(gym, findMember);
         if (findMember.getGym() == null) { // 센터 정보가 없을 때 -- 회원정보에 센터 정보 추가
+            gymContainMember.BookmarkGym();
             findMember.updateGymInfo(gym);
         }
-
         if(gymContainMemberList.isEmpty()) { // 등록된 센터가 아닐 때 -- 센터 등록
-            gymRepository.insertGymContainMember(gym, findMember);
+            gymRepository.insertGymContainMember(gymContainMember);
         }else{
             throw new AlreadyRegisterException();
         }
@@ -86,18 +87,26 @@ public class MemberService {
         firebaseRepository.updateMemberGymId(findMember,encodingPasswd);
     }
 
+    public List<MemberOwnMembershipsDto> changeMemberOwnMembership(Long memberId, Long gymId) {
+        List<MemberOwnMembership> membershipList = memberRepository.findMemberOwnMembershipByGymId(memberId, gymId);
+        return membershipList.stream()
+                .map(membership -> new MemberOwnMembershipsDto(membership))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void bookmarkGym(Long oldGymId, Long newGymId,Long memberId) {
+        Optional<GymContainMember> oldGym = gymContainMemberRepository.findByGymIdWithMemberId(memberId, oldGymId);
+        Optional<GymContainMember> newGym = gymContainMemberRepository.findByGymIdWithMemberId(memberId, newGymId);
+        oldGym.get().UnBookmarkGym();
+        newGym.get().BookmarkGym();
+    }
+
     private void validateDuplicateMember(Member member) throws Exception{
         List<Member> findMember = memberRepository.findMemberByEmail(member.getEmail());
         System.out.println("findMember.size() = " + findMember.size());
         if (!findMember.isEmpty()) {
             throw new AlreadyExistMemberException();
         }
-    }
-
-    public List<MemberOwnMembershipsDto> changeMemberOwnMembership(Long memberId, Long gymId) {
-        List<MemberOwnMembership> membershipList = memberRepository.findMemberOwnMembershipByGymId(memberId, gymId);
-        return membershipList.stream()
-                .map(membership -> new MemberOwnMembershipsDto(membership))
-                .collect(Collectors.toList());
     }
 }

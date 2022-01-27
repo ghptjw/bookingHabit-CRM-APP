@@ -39,7 +39,7 @@ public class MemberClassRepository {
         em.persist(memberClass);
     }
 
-    public List<MemberClass> findByMemberIdWithClassId(Long memberId, Long classId) {
+    public List<MemberClass> findByMemberIdWithClassIdByDate(Long memberId, Long classId) {
         return em.createQuery("select mc from MemberClass mc " +
                         " join mc.member m " +
                         " join mc.gym g " +
@@ -54,5 +54,16 @@ public class MemberClassRepository {
     @Transactional
     public void deleteById(MemberClass memberClass) {
         em.remove(memberClass);
+    }
+
+    public List<MemberClass> findByMemberIdWithClassId(Long membershipId,Long classId) {
+        return em.createQuery("select mc from MemberClass mc " +
+                        " join mc.memberOwnMembership mom " +
+                        " join mc.schedule s " +
+                        " where mom.id = :membershipId" +
+                        " and s.id = :classId")
+                .setParameter("membershipId", membershipId)
+                .setParameter("classId", classId)
+                .getResultList();
     }
 }

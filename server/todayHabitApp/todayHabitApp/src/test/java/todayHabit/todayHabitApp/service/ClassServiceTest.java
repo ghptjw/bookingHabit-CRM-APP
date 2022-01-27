@@ -1,6 +1,5 @@
 package todayHabit.todayHabitApp.service;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,11 +18,9 @@ import todayHabit.todayHabitApp.repository.MemberOwnMembershipRepository;
 import todayHabit.todayHabitApp.repository.WaitingMemberRepository;
 
 import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -66,7 +63,6 @@ class ClassServiceTest {
     @Test
     public void 수업예약_예약성공() throws Exception{
         //given
-
         //when
         classService.reserveClass(193l,5l,111l,60673l);
         em.flush();
@@ -74,7 +70,7 @@ class ClassServiceTest {
         //then
         Schedule findClass = classRepository.findById(60673l);
         MemberOwnMembership findMembership = memberOwnMembershipRepository.findById(111l);
-        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassId(193l, 60673l);
+        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassIdByDate(193l, 60673l);
         assertEquals(findClass.getReserveNumber(),1);
         assertEquals(findMembership.getCountClass(), 1);
         assertEquals(memberClassList.size(), 1);
@@ -132,7 +128,7 @@ class ClassServiceTest {
         //when
         classService.cancelClass(193l, 5l, 111l, 60675l);
         //then
-        List<MemberClass> findClass = memberClassRepository.findByMemberIdWithClassId(248l, 60675l);
+        List<MemberClass> findClass = memberClassRepository.findByMemberIdWithClassIdByDate(248l, 60675l);
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(111l);
         assertEquals(findClass.size(), 1);
         assertEquals(membership.getCountClass(), 1);
