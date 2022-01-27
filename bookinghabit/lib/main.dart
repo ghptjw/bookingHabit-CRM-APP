@@ -1,4 +1,5 @@
 import 'package:bookinghabit/screen/home.dart';
+import 'package:bookinghabit/screen/mypage.dart';
 import 'package:bookinghabit/screen/sign_in.dart';
 import 'package:bookinghabit/screen/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/signup',
           page: () => SignUpPage(),
+        ),
+          GetPage(
+          name: '/mypage',
+          page: () => Mypage(),
         ),
       ],
     );

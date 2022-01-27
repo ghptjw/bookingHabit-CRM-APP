@@ -1,6 +1,7 @@
 import 'package:bookinghabit/widget/input_text_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 enum Gender { MAN, WOMEN }
 
@@ -27,11 +28,10 @@ class _SignUpPageState extends State<SignUpPage> {
     final TextEditingController _nameController = TextEditingController();
 
     void _signUp() async {
-     
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
-             print('${_emailController.text} 비밀번호 ${_passwordController.text}');
+        Get.offAllNamed('/');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');
@@ -142,7 +142,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           });
                         }),
                     const Text(
-                        '해당 회원으로부터 본 서비스 이용에 필요한 이용약관, 개인정보 처리방침 및 위치기반 서비스 이용약관 동의를 받았습니다.')
+                        '해당 회원으로부터 본 서비스 이용에 필요한 이용약관,\n개인정보 처리방침및 위치기반 서비스 이용약관 동의를 받았습니다.')
                   ],
                 ),
                 ElevatedButton(
