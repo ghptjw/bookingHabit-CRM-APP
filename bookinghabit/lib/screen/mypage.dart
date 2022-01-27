@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Mypage extends StatelessWidget {
   const Mypage({Key? key}) : super(key: key);
@@ -22,7 +23,9 @@ class Mypage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed('setting');
+              },
               icon: const Icon(Icons.settings_outlined, color: Colors.white))
         ],
       ),
@@ -212,12 +215,12 @@ class Mypage extends StatelessWidget {
                   width: double.infinity,
                   color: Colors.blueGrey,
                   child: ElevatedButton(
-                    style:ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary:Colors.green,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      onPrimary: Colors.green,
                     ),
                     onPressed: () {},
-                    child:Text('수업내역'),
+                    child: Text('수업내역'),
                   ),
                 ),
               ),
