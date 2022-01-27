@@ -45,7 +45,9 @@ class ClassServiceTest {
     @Test
     public void 당일수업조사() throws Exception{
         //given
-        List<DayClassDto> dayClassDto = classService.DayClass(LocalDate.now(), 5l, 112l);
+        List<DayClassDto> dayClassDto = classService.DayClass(
+                LocalDate.of(2022,01,27),
+                5l, 112l);
         //when
         //then
         assertEquals(dayClassDto.size(), 0);
@@ -54,25 +56,27 @@ class ClassServiceTest {
     @Test
     public void 이전수업조사() throws Exception{
         //given
-        List<DayClassDto> dayClassDto = classService.BeforeDayClass(LocalDate.now(), 5l, 111l);
+        List<DayClassDto> dayClassDto = classService.BeforeDayClass(
+                LocalDate.of(2022, 01, 27),
+                5l, 111l);
         //when
         //then
-        assertEquals(dayClassDto.size(), 0);
+        assertEquals(dayClassDto.size(), 1);
     }
 
     @Test
     public void 수업예약_예약성공() throws Exception{
         //given
         //when
-        classService.reserveClass(193l,5l,111l,60673l);
+        classService.reserveClass(193l,5l,111l,60700l);
         em.flush();
         em.clear();
         //then
-        Schedule findClass = classRepository.findById(60673l);
+        Schedule findClass = classRepository.findById(60700l);
         MemberOwnMembership findMembership = memberOwnMembershipRepository.findById(111l);
-        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassIdByDate(193l, 60673l);
+        List<MemberClass> memberClassList = memberClassRepository.findByMemberIdWithClassIdByDate(193l, 60700l);
         assertEquals(findClass.getReserveNumber(),1);
-        assertEquals(findMembership.getCountClass(), 1);
+        assertEquals(findMembership.getCountClass(), 4);
         assertEquals(memberClassList.size(), 1);
     }
 
@@ -91,24 +95,27 @@ class ClassServiceTest {
         //given
 
         //when
-        classService.reserveClass(193l, 5l, 111l, 60676l);
+        classService.reserveClass(193l, 5l, 111l, 60700l);
+        classService.reserveClass(248l, 5l, 114l, 60700l);
         em.flush();
         em.clear();
 
         //then
-        MemberOwnMembership findMembership = memberOwnMembershipRepository.findById(111l);
-        List<WaitingMember> byMemberIdWithClassId = waitingMemberRepository.findByMemberIdWithClassId(193l, 60676l);
-        assertEquals(findMembership.getCountClass(),2);
+        MemberOwnMembership findMembership = memberOwnMembershipRepository.findById(114l);
+        List<WaitingMember> byMemberIdWithClassId = waitingMemberRepository.findByMemberIdWithClassId(248l, 60700l);
+        assertEquals(findMembership.getCountClass(),7);
         assertEquals(byMemberIdWithClassId.size(), 1);
     }
 
     @Test
     public void 수업예약_이미예약된회원() throws Exception{
         //given
+        classService.reserveClass(193l, 5l, 111l, 60700l);
         //when
+
         //then
         assertThrows(AlreadyReserveClassException.class, () -> {
-            classService.reserveClass(193l, 5l, 111l, 60675l);
+            classService.reserveClass(193l, 5l, 111l, 60700l);
         });
     }
 
@@ -125,24 +132,28 @@ class ClassServiceTest {
     @Test
     public void 예약회원취소_성공() throws Exception{
         //given
+        classService.reserveClass(193l, 5l, 111l, 60700l);
         //when
-        classService.cancelClass(193l, 5l, 111l, 60675l);
+        classService.cancelClass(193l, 5l, 111l, 60700l);
         //then
-        List<MemberClass> findClass = memberClassRepository.findByMemberIdWithClassIdByDate(248l, 60675l);
+        List<MemberClass> findClass = memberClassRepository.findByMemberIdWithClassIdByDate(248l, 60700l);
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(111l);
-        assertEquals(findClass.size(), 1);
-        assertEquals(membership.getCountClass(), 1);
+        assertEquals(findClass.size(), 0);
+        assertEquals(membership.getCountClass(), 3);
     }
 
     @Test
     public void 대기회원취소_성공() throws Exception{
         //given
+        classService.reserveClass(193l, 5l, 111l, 60700l);
+        classService.reserveClass(248l, 5l, 114l, 60700l);
+
         //when
-        classService.cancelClass(248l, 5l, 114l, 60675l);
+        classService.cancelClass(248l, 5l, 114l, 60700l);
         //then
-        List<WaitingMember> waitingMemberList = waitingMemberRepository.findByClassId(60675l);
+        List<WaitingMember> waitingMemberList = waitingMemberRepository.findByClassId(60700l);
         MemberOwnMembership membership = memberOwnMembershipRepository.findById(114l);
         assertEquals(waitingMemberList.size(),0);
-        assertEquals(membership.getCountClass(), 1);
+        assertEquals(membership.getCountClass(), 6);
     }
 }
