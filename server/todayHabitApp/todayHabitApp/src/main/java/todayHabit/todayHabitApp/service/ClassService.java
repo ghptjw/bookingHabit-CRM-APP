@@ -18,6 +18,7 @@ import todayHabit.todayHabitApp.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,11 @@ public class ClassService {
             List<MemberClass> classInfo = memberClassRepository.findByMemberIdWithClassId(membershipId, dayClassDto.getClassId());
             if (!classInfo.isEmpty()) { // 예약한 회원이라면
                 dayClassDto.changeReserve();
+            }else{
+                LocalTime now = LocalTime.now();
+                if (!now.isAfter(dayClassDto.getStartTime())) {
+                    classLists.remove(dayClassDto);
+                }
             }
         }
         return classLists;

@@ -42,4 +42,15 @@ public class ClassRepository {
     public Schedule findById(Long classId) {
         return em.find(Schedule.class, classId);
     }
+
+    public List<MemberClass> findByMembershipIdWithMemberId(Long memberId, Long membershipId) {
+        return em.createQuery("select mc from MemberClass mc " +
+                        " join mc.member m " +
+                        " join mc.memberOwnMembership mom " +
+                        " where m.id = :memberId " +
+                        " and mom.id = :membershipId", MemberClass.class)
+                .setParameter("memberId", memberId)
+                .setParameter("membershipId", membershipId)
+                .getResultList();
+    }
 }

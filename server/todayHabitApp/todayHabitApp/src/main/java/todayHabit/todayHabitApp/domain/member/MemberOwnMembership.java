@@ -77,5 +77,9 @@ public class MemberOwnMembership {
     public void decreaseMembership(int count) {
         this.countClass -= count;
     }
+
+    public LocalDate getEndDay() {
+        return this.startDay.plusDays(this.membership.getPeriod());
+    }
 }
 

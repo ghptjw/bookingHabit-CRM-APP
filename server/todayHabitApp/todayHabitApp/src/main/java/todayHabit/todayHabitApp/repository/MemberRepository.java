@@ -29,7 +29,8 @@ public class MemberRepository {
                         " left join fetch m.gym g " +
                         " left join fetch m.memberOwnMemberships mom " +
                         " left join fetch mom.membership ms " +
-                        " where m.email = :email", Member.class)
+                        " where m.email = :email" +
+                        " order by mom.startDay desc", Member.class)
                 .setParameter("email", email)
                 .getResultList();
     }
