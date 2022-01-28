@@ -39,7 +39,6 @@ class _ScheduleState extends State<Schedule> {
                                     width: double.infinity,
                                     color: Colors.black12,
                                     child: Row(
-                                      
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Expanded(
@@ -48,6 +47,14 @@ class _ScheduleState extends State<Schedule> {
                                             height:double.infinity,
                                             color: Colors.white30,
                                             child: const Text('center name'),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            width: double.infinity,
+                                            height:double.infinity,
+                                            color: Colors.blue,
+                                            child: const Text('membership name'),
                                           ),
                                         ),
                                         const Spacer(),

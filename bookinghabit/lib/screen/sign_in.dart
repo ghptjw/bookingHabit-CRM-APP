@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
 
+  
   @override
   State<AuthPage> createState() => _AuthPageState();
 }
@@ -17,6 +18,8 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     // ? context 앱이 구동되고 있는 정보
     final Size size = MediaQuery.of(context).size;
+    FocusNode emailNode = FocusNode();
+    FocusNode passwordNode = FocusNode();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -39,7 +42,7 @@ class _AuthPageState extends State<AuthPage> {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              _inputForm(size),
+              _inputForm(size,emailNode, passwordNode),
               SizedBox(
                 height: size.height * 0.02,
               ),
@@ -124,8 +127,8 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _inputForm(Size size) {
-    // ignore: unused_local_variable
+  Widget _inputForm(Size size, emailNode, passwordNode) {
+
 
     return Form(
         key: _formKey,
@@ -133,11 +136,13 @@ class _AuthPageState extends State<AuthPage> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             TextFormField(
+              focusNode:emailNode,
               controller: _emailController,
               autofocus: false,
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.emailAddress,
+              cursorColor: const Color(0xff16AA83),
               decoration: const InputDecoration(
                 fillColor: Color(0xfffcfcfc),
                 focusedBorder: OutlineInputBorder(
@@ -169,10 +174,12 @@ class _AuthPageState extends State<AuthPage> {
               height: size.height * 0.015,
             ),
             TextFormField(
+              controller: _passwordController,
+              focusNode: passwordNode,
               autofocus: false,
               obscureText: true,
-              controller: _passwordController,
               textInputAction: TextInputAction.done,
+              cursorColor: const Color(0xff16AA83),
               decoration: const InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Color(0xff16AA83)),
@@ -183,6 +190,9 @@ class _AuthPageState extends State<AuthPage> {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: '비밀번호',
+                labelStyle: TextStyle(
+                  // color: passwordNode.hasFocus ? Color.fromRGBO(173, 173, 173, 1) : Color(0xff16AA83),
+                ),
                 hintText: '비밀번호',
               ),
               validator: (value) {
