@@ -8,6 +8,7 @@ import todayHabit.todayHabitApp.domain.member.MemberClass;
 import javax.persistence.EntityManager;
 import javax.swing.text.html.parser.Entity;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -61,9 +62,22 @@ public class MemberClassRepository {
                         " join mc.memberOwnMembership mom " +
                         " join mc.schedule s " +
                         " where mom.id = :membershipId" +
-                        " and s.id = :classId")
+                        " and s.id = :classId", MemberClass.class)
                 .setParameter("membershipId", membershipId)
                 .setParameter("classId", classId)
                 .getResultList();
     }
+
+    public List<MemberClass> findBetweenDate(Long gymId, LocalDate startDay, LocalDate endDay, Long membershipId) {
+        return em.createQuery("select mc from MemberClass mc " +
+                        " join fetch mc.schedule s " +
+                        " join mc.memberOwnMembership mom " +
+                        " where mom.id = :membershipId " +
+                        " and s.startDay between :startDay and :endDay ", MemberClass.class)
+                .setParameter("membershipId", membershipId)
+                .setParameter("startDay", startDay)
+                .setParameter("endDay", endDay)
+                .getResultList();
+    }
+
 }

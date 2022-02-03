@@ -99,6 +99,10 @@ public class ClassService {
                 .minusMinutes(gymInfo.getReservableTime());
         if (LocalDateTime.now().isAfter(reservableTime)) { // 현재 시간이 예약 가능 시간 보다 지났을 때 예약 불가능
             throw new TimeoutReserveException();
+        }else if(membership.getDayAttend() >= membership.getMembership().getMaxDayAttend()) {
+            throw new OverDayAttendException();
+        }else if(membership.getWeekAttend() >= membership.getMembership().getMaxWeekAttend()) {
+            throw new OverWeekAttendException();
         }else if(!memberClassList.isEmpty() || !waitingMemberList.isEmpty()) { // 이미 예약된 회원일 때
             throw new AlreadyReserveClassException();
         }else if (classInfo.getTotalReservation() <= classInfo.getReserveNumber()) { //예약 정원이 다찼을 때 -> 대기
@@ -120,6 +124,7 @@ public class ClassService {
             }
             WaitingMember waitingMember = new WaitingMember(gymInfo, classInfo, memberInfo, membership, waitingNumber);
             waitingMemberRepository.save(waitingMember);
+            membership.increaseAttend();
             return "대기 인원으로 등록 완료되었습니다.";
         } else { // 예약 가능
             ClassHistory classHistory = new ClassHistory(gymInfo, classInfo, memberInfo, 0);
@@ -128,6 +133,7 @@ public class ClassService {
             classInfo.increaseCount();
             MemberClass memberClass = new MemberClass(gymInfo, classInfo, memberInfo, membership);
             memberClassRepository.save(memberClass);
+            membership.increaseAttend();
             return "예약 인원으로 등록 완료되었습니다.";
         }
     }
@@ -178,6 +184,7 @@ public class ClassService {
                     waitingMember.changeWaitingNumber();
                 }
             }
+            membership.decreaseAttend();
             return "예약 취소가 완료되었습니다.";
         }else if (!waitingMemberList.isEmpty()) { //대기 회원일 때\
             membership.decreaseMembership(classInfo.getDecrease());
@@ -187,6 +194,7 @@ public class ClassService {
             for (WaitingMember waitingMember : waitingList) {
                 waitingMember.changeWaitingNumber();
             }
+            membership.decreaseAttend();
             return "대기 취소가 완료되었습니다.";
         }else{
             throw new IllegalStateException("예약이 안되어있는 회원입니다.");

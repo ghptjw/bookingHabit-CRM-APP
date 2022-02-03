@@ -67,6 +67,7 @@ public class MemberService {
             throw new NotExistMemberException();
         }
         if(passwordEncoder.matches(passwd,findMember.get(0).getPasswd())){
+            System.out.println("로그인 성공");
             return new LoginMemberDto(findMember.get(0));
         }else{
             throw new NotCorrectPasswdException();

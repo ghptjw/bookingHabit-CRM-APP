@@ -44,6 +44,7 @@ public class MemberOwnMembership {
     private List<HoldingMembership> holdingMemberships;
 
     private LocalDate startDay;
+
     private LocalDate endDay;
 
     private int countClass;
@@ -78,8 +79,18 @@ public class MemberOwnMembership {
         this.countClass -= count;
     }
 
-    public LocalDate getEndDay() {
-        return this.startDay.plusDays(this.membership.getPeriod());
+    public void increaseAttend() {
+        this.DayAttend += 1;
+        this.weekAttend += 1;
+    }
+
+    public void decreaseAttend() {
+        this.DayAttend -= 1;
+        this.weekAttend -= 1;
+    }
+
+    public void increaseMembershipEndDay(int period) {
+        this.endDay = this.endDay.plusDays(period);
     }
 }
 

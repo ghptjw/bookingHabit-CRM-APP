@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import todayHabit.todayHabitApp.service.HoldingService;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,15 +16,23 @@ public class HoldingController {
 
     private final HoldingService holdingService;
 
+    @PostMapping("member/holdingMembership/check")
+    public int checkHoldingMembership(@RequestBody HoldingDto request) throws Exception {
+        int classListCount = holdingService.checkHoldingMembership(request.getGymId(),
+                request.getMembershipId(), request.getStartDay(), request.getEndDay());
+        return classListCount;
+    }
+
     @PostMapping("member/holdingMembership")
     public String holdingMembership(@RequestBody HoldingDto request) throws Exception {
-        holdingService.holdingMembership(request.getMemberId(), request.getHoldingMembershipId(),
-                request.getMembershipId(), request.getStartDay(), request.getEndDay());
-        return "홀딩이 완료되었습니다";
+        return holdingService.holdingMembership(request.getMembershipId(),
+                request.getHoldingMembershipId(), request.getStartDay(), request.getEndDay());
     }
 
     @Data
     private class HoldingDto {
+        @NotNull
+        private Long gymId;
         @NotNull
         private Long memberId;
         @NotNull
@@ -32,8 +40,8 @@ public class HoldingController {
         @NotNull
         private Long holdingMembershipId;
         @NotNull
-        private LocalDateTime startDay;
+        private LocalDate startDay;
         @NotNull
-        private LocalDateTime endDay;
+        private LocalDate endDay;
     }
 }

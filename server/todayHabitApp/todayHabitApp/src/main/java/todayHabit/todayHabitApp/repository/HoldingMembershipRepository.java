@@ -8,11 +8,11 @@ import javax.persistence.EntityManager;
 
 @Repository
 @RequiredArgsConstructor
-public class HoldingRepository {
-
+public class HoldingMembershipRepository {
     private final EntityManager em;
 
-    public HoldingMembership findById(Long holdingMembershipId) {
-        return em.find(HoldingMembership.class, holdingMembershipId);
+    public HoldingMembership findById(Long id) {
+        return em.find(HoldingMembership.class, id);
     }
+
 }

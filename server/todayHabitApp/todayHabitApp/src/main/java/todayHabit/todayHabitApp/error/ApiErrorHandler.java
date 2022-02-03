@@ -105,6 +105,36 @@ public class ApiErrorHandler extends Exception {
         return new ResponseEntity<>(apiException, httpStatus);
     }
 
+    @ExceptionHandler(value = OverDayAttendException.class)
+    public ResponseEntity<Object> OverDayAttendException(OverDayAttendException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("당일 최대 예약 횟수가 초과되었습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    @ExceptionHandler(value = OverWeekAttendException.class)
+    public ResponseEntity<Object> OverWeekAttendException(OverWeekAttendException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("주간 최대 예약 횟수가 초과되었습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
+    /*
+    * holdingController
+    * */
+
+    @ExceptionHandler(value = OutOfStartDayMembershipPeriodException.class)
+    public ResponseEntity<Object> OutOfMembershipPeriodException(OutOfStartDayMembershipPeriodException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("시작일이 회원권 기간내에 있지 않습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+    @ExceptionHandler(value = OutOfEndDayMembershipPeriodException.class)
+    public ResponseEntity<Object> OutOfEndDayMembershipPeriodException(OutOfEndDayMembershipPeriodException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiException apiException = new ApiException("종료일이 회원권 기간내에 있지 않습니다.", httpStatus, LocalDateTime.now());
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
 
     @Data
     @AllArgsConstructor
@@ -113,7 +143,6 @@ public class ApiErrorHandler extends Exception {
         private final String message;
         private final HttpStatus httpStatus;
         private final LocalDateTime time;
-
 
     }
 

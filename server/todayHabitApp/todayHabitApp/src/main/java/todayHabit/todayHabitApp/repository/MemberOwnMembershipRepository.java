@@ -2,6 +2,7 @@ package todayHabit.todayHabitApp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 
 import javax.persistence.EntityManager;
@@ -24,7 +25,15 @@ public class MemberOwnMembershipRepository {
     }
 
     public MemberOwnMembership findById(Long membershipId) {
-       return em.find(MemberOwnMembership.class, membershipId);
+        return em.find(MemberOwnMembership.class, membershipId);
+    }
+
+    public MemberOwnMembership findByIdToHolding(Long membershipId) {
+        return em.createQuery("select mom from MemberOwnMembership mom " +
+                        " join fetch mom.membership ms" +
+                        " where mom.id = :membershipId", MemberOwnMembership.class)
+                .setParameter("membershipId", membershipId)
+                .getSingleResult();
     }
 }
 

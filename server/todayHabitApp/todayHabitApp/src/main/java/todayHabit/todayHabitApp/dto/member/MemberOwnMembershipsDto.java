@@ -1,6 +1,7 @@
 package todayHabit.todayHabitApp.dto.member;
 
 import lombok.Data;
+import todayHabit.todayHabitApp.domain.holding.HoldingList;
 import todayHabit.todayHabitApp.domain.holding.HoldingMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembershipClassType;
@@ -8,6 +9,7 @@ import todayHabit.todayHabitApp.domain.member.MemberOwnMembershipClassType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -57,18 +59,30 @@ public class MemberOwnMembershipsDto {
             this.name = memberOwnMembershipClassType.getClassTypeName();
         }
     }
+
     @Data
     private static class HoldingMembershipDto {
         private Long id;
         private Long membershipId;
         private int holdingPeriod;
         private int usingPeriod;
-
+        private boolean deleteValue;
+        private LocalDate holdingStartDate;
+        private LocalDate holdingEndDate;
         public HoldingMembershipDto(HoldingMembership holdingMembership) {
+
             this.id = holdingMembership.getId();
             this.membershipId = holdingMembership.getMemberOwnMembership().getId();
             this.holdingPeriod = holdingMembership.getHoldingPeriod();
             this.usingPeriod = holdingMembership.getUsingPeriod();
+            this.deleteValue = holdingMembership.getDeleteValue();
+            if(!holdingMembership.getHoldingList().isEmpty()){
+                this.holdingStartDate = holdingMembership.getHoldingList().get(0).getStartDay();
+                this.holdingEndDate = holdingMembership.getHoldingList().get(0).getEndDay();
+            }
+
         }
     }
+
+
 }
