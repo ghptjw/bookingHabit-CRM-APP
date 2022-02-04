@@ -1,6 +1,7 @@
 package todayHabit.todayHabitApp.dto.member;
 
 import lombok.Data;
+import todayHabit.todayHabitApp.domain.gym.GymBookmark;
 import todayHabit.todayHabitApp.domain.gym.GymContainMember;
 import todayHabit.todayHabitApp.domain.holding.HoldingMembership;
 import todayHabit.todayHabitApp.domain.member.Male;
@@ -43,7 +44,7 @@ public class LoginMemberDto {
                 .map(memberOwnMembership -> new MemberOwnMembershipsDto(memberOwnMembership))
                 .collect(toList());
         this.gymList = member.getGymList().stream()
-                .map(gymList -> new gymListDto(gymList.getGym()))
+                .map(gymList -> new gymListDto(gymList.getGym(), gymList.getBookmark()))
                 .collect(toList());
     }
 
@@ -51,6 +52,7 @@ public class LoginMemberDto {
     private class gymListDto {
         private Long gymId;
         private String gymName;
+        private GymBookmark bookmark;
         private int openReserveDate; // 예약이 몇일 전부터 열릴지(일 단위)
         private String openReserveTime; // 예약이 몇 시 부터 열릴지
         private boolean remainMember; // 잔여 인원 노출 여부
@@ -70,9 +72,10 @@ public class LoginMemberDto {
         private int reserveConfirmTime; // 예약 확정 시간(예약 가능 시간과 동일:1, 예약 변경 가능시간과 동일:2, 예약 취소 가능시간과 동일:3)
         private int limitWaitingMember; // 대기 가능 회원 제한
 
-        public gymListDto(Gym gym) {
+        public gymListDto(Gym gym, GymBookmark bookmark) {
             this.gymId = gym.getId();
             this.gymName = gym.getName();
+            this.bookmark = bookmark;
             this.openReserveDate = gym.getOpenReserveDate();
             this.openReserveTime = gym.getOpenReserveTime();
             this.remainMember = gym.isRemainMember();

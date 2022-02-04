@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Table(name = "holdingList")
 public class HoldingList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +21,19 @@ public class HoldingList {
 
     private LocalDate startDay;
     private LocalDate endDay;
-    private String description;
 
     @Enumerated(EnumType.STRING)
     private HoldingLocation holdingLocation;
+
+    protected HoldingList() {
+
+    }
+
+    public HoldingList(HoldingMembership holdingMembership, LocalDate startDay, LocalDate endDay, HoldingLocation holdingLocation) {
+        this.holdingMembership = holdingMembership;
+        this.startDay = startDay;
+        this.endDay = endDay;
+        this.holdingLocation = holdingLocation;
+    }
 
 }

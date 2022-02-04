@@ -27,7 +27,7 @@ public class DayClassDto {
     private int decrease;
     private String repeatDay;
     private String cycle;
-
+    private boolean reserve;
     private List<ClassCoachDto> coachList;
 
     public DayClassDto(Schedule classList) {
@@ -43,6 +43,7 @@ public class DayClassDto {
         this.decrease = classList.getDecrease();
         this.repeatDay = classList.getRepeatDay();
         this.cycle = classList.getCycle();
+        this.reserve = false;
         this.coachList = classList.getCoachClasses().stream()
                 .map(coachInfo -> new ClassCoachDto(coachInfo))
                 .collect(Collectors.toList());
@@ -64,6 +65,10 @@ public class DayClassDto {
         this.coachList = classList.getSchedule().getCoachClasses().stream()
                 .map(coachInfo -> new ClassCoachDto(coachInfo))
                 .collect(Collectors.toList());
+    }
+
+    public void changeReserve() {
+        this.reserve = true;
     }
 
     @Data

@@ -6,6 +6,7 @@ import todayHabit.todayHabitApp.domain.gym.Gym;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,7 +27,25 @@ public class HoldingMembership {
     @JoinColumn(name = "member_membership_id")
     private MemberOwnMembership memberOwnMembership;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "holdingMembership")
+    private List<HoldingList> holdingList;
+
+
     private int holdingPeriod;
     private int usingPeriod;
+    private boolean deleteValue;
 
+    public void changeDeleteValue() {
+        this.deleteValue = true;
+    }
+
+    public void setUsingPeriod(int usingPeriod) {
+        this.usingPeriod = usingPeriod;
+    }
+
+
+    public boolean getDeleteValue() {
+        return this.deleteValue;
+    }
 }

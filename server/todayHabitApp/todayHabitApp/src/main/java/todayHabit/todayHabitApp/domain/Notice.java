@@ -26,4 +26,8 @@ public class Notice {
     private LocalDateTime date;
     private int count;
 
+    public void increaseCount() {
+        this.count += 1;
+    }
+
 }

@@ -7,14 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import todayHabit.todayHabitApp.domain.gym.GymContainMember;
 import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.gym.Gym;
+import todayHabit.todayHabitApp.domain.member.MemberClass;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.dto.member.LoginMemberDto;
 import todayHabit.todayHabitApp.dto.member.MemberOwnMembershipsDto;
+import todayHabit.todayHabitApp.dto.schedule.MembershipClassListDto;
 import todayHabit.todayHabitApp.error.*;
 import todayHabit.todayHabitApp.firebase.FirebaseRepository;
-import todayHabit.todayHabitApp.repository.GymContainMemberRepository;
-import todayHabit.todayHabitApp.repository.GymRepository;
-import todayHabit.todayHabitApp.repository.MemberRepository;
+import todayHabit.todayHabitApp.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,20 +28,18 @@ public class MemberService {
     private final GymRepository gymRepository;
     private final GymContainMemberRepository gymContainMemberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FirebaseRepository firebaseRepository;
+    private final MemberOwnMembershipRepository memberOwnMembershipRepository;
+    private final ClassRepository classRepository;
 
     @Transactional
     public Long joinMember(Member member) throws Exception{
         validateDuplicateMember(member);
         memberRepository.saveMember(member);
-        firebaseRepository.initialize();
-        firebaseRepository.saveMember(member);
         return member.getId();
     }
 
     @Transactional
     public String updateCenterInfo(String serialNumber, Long memberId) throws Exception {
-        firebaseRepository.initialize();
         Optional<Gym> findGym = gymRepository.findGymBySerialNumber(serialNumber);
         if(findGym.isEmpty()){
             throw new NonExistGymException();
@@ -50,12 +48,13 @@ public class MemberService {
         Gym gym = findGym.get();
         List<GymContainMember> gymContainMemberList
                 = gymRepository.findGymContainMemberByGymIdWithMemberId(gym.getId(), findMember.getId());
+        GymContainMember gymContainMember = new GymContainMember(gym, findMember);
         if (findMember.getGym() == null) { // 센터 정보가 없을 때 -- 회원정보에 센터 정보 추가
+            gymContainMember.BookmarkGym();
             findMember.updateGymInfo(gym);
         }
-
         if(gymContainMemberList.isEmpty()) { // 등록된 센터가 아닐 때 -- 센터 등록
-            gymRepository.insertGymContainMember(gym, findMember);
+            gymRepository.insertGymContainMember(gymContainMember);
         }else{
             throw new AlreadyRegisterException();
         }
@@ -68,6 +67,7 @@ public class MemberService {
             throw new NotExistMemberException();
         }
         if(passwordEncoder.matches(passwd,findMember.get(0).getPasswd())){
+            System.out.println("로그인 성공");
             return new LoginMemberDto(findMember.get(0));
         }else{
             throw new NotCorrectPasswdException();
@@ -76,14 +76,33 @@ public class MemberService {
 
     @Transactional
     public void updatePasswd(Long memberId, String beforePasswd, String newPasswd) throws Exception{
-        firebaseRepository.initialize();
         Member findMember = memberRepository.findMemberById(memberId);
         if (!passwordEncoder.matches(beforePasswd, findMember.getPasswd())) {
             throw new NotCorrectPasswdException();
         }
         String encodingPasswd = passwordEncoder.encode(newPasswd);
         findMember.updatePasswd(encodingPasswd);
-        firebaseRepository.updateMemberGymId(findMember,encodingPasswd);
+    }
+
+    public List<MemberOwnMembershipsDto> changeMemberOwnMembership(Long memberId, Long gymId) {
+        List<MemberOwnMembership> membershipList = memberRepository.findMemberOwnMembershipByGymId(memberId, gymId);
+        return membershipList.stream()
+                .map(membership -> new MemberOwnMembershipsDto(membership))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void bookmarkGym(Long oldGymId, Long newGymId,Long memberId) {
+        Optional<GymContainMember> oldGym = gymContainMemberRepository.findByGymIdWithMemberId(memberId, oldGymId);
+        Optional<GymContainMember> newGym = gymContainMemberRepository.findByGymIdWithMemberId(memberId, newGymId);
+        oldGym.get().UnBookmarkGym();
+        newGym.get().BookmarkGym();
+    }
+
+    public MembershipClassListDto getMembershipClassList(Long membershipId, Long memberId) {
+        MemberOwnMembership membershipInfo = memberOwnMembershipRepository.findById(membershipId);
+        List<MemberClass> classList = classRepository.findByMembershipIdWithMemberId(memberId, membershipId);
+        return new MembershipClassListDto(classList.size(), membershipInfo.getStartDay(), membershipInfo.getEndDay(), classList);
     }
 
     private void validateDuplicateMember(Member member) throws Exception{
@@ -94,10 +113,5 @@ public class MemberService {
         }
     }
 
-    public List<MemberOwnMembershipsDto> changeMemberOwnMembership(Long memberId, Long gymId) {
-        List<MemberOwnMembership> membershipList = memberRepository.findMemberOwnMembershipByGymId(memberId, gymId);
-        return membershipList.stream()
-                .map(membership -> new MemberOwnMembershipsDto(membership))
-                .collect(Collectors.toList());
-    }
+
 }

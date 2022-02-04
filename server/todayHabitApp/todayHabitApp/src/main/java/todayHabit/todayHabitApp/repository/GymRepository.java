@@ -26,8 +26,7 @@ public class GymRepository {
                 .getSingleResult());
     }
 
-    public void insertGymContainMember(Gym gym, Member member) {
-        GymContainMember gymContainMember = new GymContainMember(gym, member);
+    public void insertGymContainMember(GymContainMember gymContainMember) {
         em.persist(gymContainMember);
     }
 

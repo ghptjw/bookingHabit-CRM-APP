@@ -49,6 +49,9 @@ public class Schedule {
     private LocalDate repeatEndDay;
     private String cycle;
 
+    protected Schedule() {
+
+    }
 
     public void increaseCount() {
         this.reserveNumber += 1;

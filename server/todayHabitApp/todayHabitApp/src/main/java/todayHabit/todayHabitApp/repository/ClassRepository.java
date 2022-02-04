@@ -19,8 +19,8 @@ public class ClassRepository {
         String query = "select s from Schedule s" +
                 " join fetch s.classType ct " +
                 " join s.gym g" +
-                " join fetch s.coachClasses cc" +
-                " join fetch cc.coach co" +
+                " left join fetch s.coachClasses cc" +
+                " left join fetch cc.coach co" +
                 " where s.startDay = :startDay " +
                 " and g.id = :gymId";
         if (classTypeList.size() != 0) {
@@ -41,5 +41,16 @@ public class ClassRepository {
 
     public Schedule findById(Long classId) {
         return em.find(Schedule.class, classId);
+    }
+
+    public List<MemberClass> findByMembershipIdWithMemberId(Long memberId, Long membershipId) {
+        return em.createQuery("select mc from MemberClass mc " +
+                        " join mc.member m " +
+                        " join mc.memberOwnMembership mom " +
+                        " where m.id = :memberId " +
+                        " and mom.id = :membershipId", MemberClass.class)
+                .setParameter("memberId", memberId)
+                .setParameter("membershipId", membershipId)
+                .getResultList();
     }
 }
