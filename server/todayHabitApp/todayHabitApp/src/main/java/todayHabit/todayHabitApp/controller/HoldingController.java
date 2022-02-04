@@ -16,21 +16,26 @@ public class HoldingController {
 
     private final HoldingService holdingService;
 
-    @PostMapping("member/holdingMembership/check")
+    @PostMapping("/hold/membership/check")
     public int checkHoldingMembership(@RequestBody HoldingDto request) throws Exception {
         int classListCount = holdingService.checkHoldingMembership(request.getGymId(),
                 request.getMembershipId(), request.getStartDay(), request.getEndDay());
         return classListCount;
     }
 
-    @PostMapping("member/holdingMembership")
+    @PostMapping("/hold/membership")
     public String holdingMembership(@RequestBody HoldingDto request) throws Exception {
         return holdingService.holdingMembership(request.getMembershipId(),
                 request.getHoldingMembershipId(), request.getStartDay(), request.getEndDay());
     }
 
+    @PostMapping("/hold/membership/cancel")
+    public String cancelHoldingMembership(@RequestBody HoldingDto request) throws Exception {
+        return holdingService.holdingMembership(request.getMembershipId(),
+                request.getHoldingMembershipId(), request.getStartDay(), request.getEndDay());
+    }
     @Data
-    private class HoldingDto {
+    static class HoldingDto {
         @NotNull
         private Long gymId;
         @NotNull

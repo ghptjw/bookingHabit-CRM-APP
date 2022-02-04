@@ -9,7 +9,6 @@ import todayHabit.todayHabitApp.domain.holding.HoldingList;
 import todayHabit.todayHabitApp.domain.holding.HoldingMembership;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 import todayHabit.todayHabitApp.error.OutOfStartDayMembershipPeriodException;
-import todayHabit.todayHabitApp.error.TimeoutReserveException;
 import todayHabit.todayHabitApp.repository.HoldingListRepository;
 import todayHabit.todayHabitApp.repository.HoldingMembershipRepository;
 import todayHabit.todayHabitApp.repository.MemberOwnMembershipRepository;
@@ -21,7 +20,6 @@ import java.util.Optional;
 
 import static java.util.Optional.*;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

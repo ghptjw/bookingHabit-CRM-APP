@@ -2,7 +2,6 @@ package todayHabit.todayHabitApp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import todayHabit.todayHabitApp.domain.member.Member;
 import todayHabit.todayHabitApp.domain.member.MemberOwnMembership;
 
 import javax.persistence.EntityManager;

@@ -57,7 +57,7 @@ public class HoldingService {
             holdingMembershipInfo.setUsingPeriod(period.getDays());
             HoldingList holdingList = new HoldingList(holdingMembershipInfo, startDay, endDay, HoldingLocation.APP);
             holdingListRepository.save(holdingList);
-            membershipInfo.increaseMembershipEndDay(period.getDays());
+            membershipInfo.increaseMembershipEndDay(period.getDays()+1);
             return "홀딩이 완료되었습니다.";
         }
 
