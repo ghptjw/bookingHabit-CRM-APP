@@ -6,15 +6,16 @@ import 'package:get/get.dart';
 enum Gender { MAN, WOMEN }
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  const SignUpPage({Key? key, this.size}) : super(key: key);
+  final Size? size;
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool _isChecked = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isChecked = false;
   Gender _gender = Gender.MAN;
 
   @override
@@ -27,6 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final TextEditingController _birthController = TextEditingController();
     final TextEditingController _nameController = TextEditingController();
 
+ 
     void _signUp() async {
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -80,17 +82,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       fit: FlexFit.loose,
                       child: Container(
                         decoration: BoxDecoration(
-                        border: Border.all( 
-                          width: _gender == Gender.MAN ? 2 : 1,
-                          color: _gender == Gender.MAN ?  Color.fromRGBO(61, 61, 61 ,1) : 
-                            Color.fromRGBO(173, 173 ,173 ,1), 
-                        ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0) // POINT
+                          border: Border.all(
+                            width: _gender == Gender.MAN ? 2 : 1,
+                            color: _gender == Gender.MAN
+                                ? Color.fromRGBO(61, 61, 61, 1)
+                                : Color.fromRGBO(173, 173, 173, 1),
                           ),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(10.0) // POINT
+                              ),
                         ),
                         child: RadioListTile(
-                          activeColor: Colors.black,
+                            activeColor: Colors.black,
                             title: const Text('남성'),
                             value: Gender.MAN,
                             groupValue: _gender,
@@ -107,14 +110,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       fit: FlexFit.loose,
                       child: Container(
                         decoration: BoxDecoration(
-                        border: Border.all( 
-                          width: _gender == Gender.WOMEN ? 2: 1,
-                          color: _gender == Gender.WOMEN ?  Color.fromRGBO(61, 61, 61 ,1) :
-                          Color.fromRGBO(173, 173 ,173 ,1), 
-                        ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0) // POINT
+                          border: Border.all(
+                            width: _gender == Gender.WOMEN ? 2 : 1,
+                            color: _gender == Gender.WOMEN
+                                ? Color.fromRGBO(61, 61, 61, 1)
+                                : Color.fromRGBO(173, 173, 173, 1),
                           ),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(10.0) // POINT
+                              ),
                         ),
                         child: RadioListTile(
                             activeColor: Colors.black,
