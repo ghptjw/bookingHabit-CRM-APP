@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AuthPage extends StatelessWidget {
-  AuthPage({Key? key}) : super(key: key);
+class AuthPage extends StatefulWidget {
+  const AuthPage({Key? key}) : super(key: key);
 
+  
+  @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -12,6 +18,8 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // ? context 앱이 구동되고 있는 정보
     final Size size = MediaQuery.of(context).size;
+    FocusNode emailNode = FocusNode();
+    FocusNode passwordNode = FocusNode();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -34,7 +42,7 @@ class AuthPage extends StatelessWidget {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              _inputForm(size),
+              _inputForm(size,emailNode, passwordNode),
               SizedBox(
                 height: size.height * 0.02,
               ),
@@ -75,8 +83,8 @@ class AuthPage extends StatelessWidget {
       children: [
         Expanded(
           flex: 1,
-          child: TextButton(
-            onPressed: () {
+          child: GestureDetector(
+            onTap: () {
               Get.toNamed('/signup'
                   // arguments 전달 가능 (텍스트, 숫자) {'name':'개남', 'age': '22'}
                   // 찍어 낼떈 Get.arguments
@@ -103,7 +111,7 @@ class AuthPage extends StatelessWidget {
         ),
         Expanded(
           flex: 1,
-          child: TextButton(
+          child: GestureDetector(
             child: const Text(
               '비밀번호 찾기',
               textAlign: TextAlign.center,
@@ -112,15 +120,15 @@ class AuthPage extends StatelessWidget {
                 color: Color(0xffBCBCBC),
               ),
             ),
-            onPressed: () {},
+            onTap: () {},
           ),
         ),
       ],
     );
   }
 
-  Widget _inputForm(Size size) {
-    // ignore: unused_local_variable
+  Widget _inputForm(Size size, emailNode, passwordNode) {
+
 
     return Form(
         key: _formKey,
@@ -128,9 +136,13 @@ class AuthPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             TextFormField(
+              focusNode:emailNode,
               controller: _emailController,
+              autofocus: false,
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
+              cursorColor: const Color(0xff16AA83),
               decoration: const InputDecoration(
                 fillColor: Color(0xfffcfcfc),
                 focusedBorder: OutlineInputBorder(
@@ -141,20 +153,33 @@ class AuthPage extends StatelessWidget {
                     borderSide: BorderSide(color: Colors.white, width: 2.0),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: '이메일',
+                hintText: '이메일',
               ),
+              onSaved: (value) {
+                _emailController.text = value!;
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
+                  return '이메일을 입력해주세요.';
+                } else if (!RegExp(
+                        "/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}/")
+                    .hasMatch(value)) {
                   return '잘못된 형식입니다.';
+                } else {
+                  return null;
                 }
-                return null;
               },
             ),
             SizedBox(
               height: size.height * 0.015,
             ),
             TextFormField(
-              obscureText: true,
               controller: _passwordController,
+              focusNode: passwordNode,
+              autofocus: false,
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              cursorColor: const Color(0xff16AA83),
               decoration: const InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Color(0xff16AA83)),
@@ -165,12 +190,24 @@ class AuthPage extends StatelessWidget {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 labelText: '비밀번호',
+                labelStyle: TextStyle(
+                  // color: passwordNode.hasFocus ? Color.fromRGBO(173, 173, 173, 1) : Color(0xff16AA83),
+                ),
+                hintText: '비밀번호',
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
+                  return '비밀번호를 입력해주세요.';
+                } else if (!RegExp(
+                        "/^[A-Za-z0-9]{6,12}/")
+                    .hasMatch(value)) {
                   return '잘못된 형식입니다.';
+                } else {
+                  return null;
                 }
-                return null;
+              },
+              onSaved: (value) {
+                _passwordController.text = value!;
               },
             ),
           ],
